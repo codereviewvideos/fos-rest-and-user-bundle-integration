@@ -26,7 +26,7 @@ security:
             anonymous: true
 
         api_anon:
-            pattern: ^/(register|password/reset)
+            pattern: ^/(register|password)
             anonymous: true
 
         api_login:
@@ -55,5 +55,5 @@ security:
 
         - { path: ^/login$,           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register$,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/password/reset$,  role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/password,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,                 role: IS_AUTHENTICATED_FULLY }

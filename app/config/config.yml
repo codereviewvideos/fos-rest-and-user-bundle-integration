@@ -73,8 +73,14 @@ swiftmailer:
 # FOS User
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
-    firewall_name: main
+    firewall_name: api
     user_class: AppBundle\Entity\User
+    from_email:
+        address:        support@mywebsite.com
+        sender_name:    mr_mailer
+    service:
+        mailer: user.mailer.rest
+
 
 # Nelmio CORS
 nelmio_cors:
@@ -134,20 +140,20 @@ jms_serializer:
         directories:
             KnpPaginatorBundle:
                 namespace_prefix: Knp\Bundle\PaginatorBundle
-                path: %kernel.root_dir%/config/serializer/KnpPaginatorBundle
+                path: "%kernel.root_dir%/config/serializer/KnpPaginatorBundle"
             KnpPager:
                 namespace_prefix: Knp\Component\Pager
-                path: %kernel.root_dir%/config/serializer/KnpPager
+                path: "%kernel.root_dir%/config/serializer/KnpPager"
 
 
 # CSA Guzzle
 csa_guzzle:
-    profiler: %kernel.debug%
+    profiler: "%kernel.debug%"
 
 
 # Lexik JWT Bundle
 lexik_jwt_authentication:
-    private_key_path: %jwt_private_key_path%
-    public_key_path:  %jwt_public_key_path%
-    pass_phrase:      %jwt_key_pass_phrase%
-    token_ttl:        %jwt_token_ttl%
+    private_key_path: "%jwt_private_key_path%"
+    public_key_path:  "%jwt_public_key_path%"
+    pass_phrase:      "%jwt_key_pass_phrase%"
+    token_ttl:        "%jwt_token_ttl%"

@@ -7,3 +7,8 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+    user.mailer.rest:
+        class: AppBundle\Mailer\RestMailer
+        public: false
+        parent: fos_user.mailer.twig_swift

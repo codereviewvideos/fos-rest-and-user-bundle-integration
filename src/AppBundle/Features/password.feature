@@ -10,42 +10,31 @@ Feature: Handle password changing via the RESTful API
       | id | username | email          | password |
       | 1  | peter    | peter@test.com | testpass |
       | 2  | john     | john@test.org  | johnpass |
-    And I am successfully logged in with username: "peter", and password: "testpass"
     And I set header "Content-Type" with value "application/json"
 
 
-  Scenario: Cannot GET Login
-    When I send a "GET" request to "/login"
-    Then the response code should be 405
+  Scenario: Cannot request a password reset for an invalid username
+    When I send a "POST" request to "/password/reset/request" with body:
+      """
+      { "username": "davey" }
+      """
+    Then the response code should be 403
+     And the response should contain "Invalid username"
 
-  Scenario: User cannot Login with bad credentials
-    When I send a "POST" request to "/login" with body:
-      """
-      {
-        "username": "jimmy",
-        "password": "badpass"
-      }
-      """
-    Then the response code should be 401
+#  @this
+#  Scenario: Cannot request another password reset for an account already requesting but not yet actioning the reset request
+#    When I send a "POST" request to "/password/reset" with body:
+#      """
+#      { "username": "davey" }
+#      """
+#    Then the response code should be 403
+#    And the response should contain "Invalid username"
 
-  Scenario: User can Login with good credentials (username)
-    When I send a "POST" request to "/login" with body:
+  @this
+  Scenario: Can request a password reset for a valid username
+    When I send a "POST" request to "/password/reset/request" with body:
       """
-      {
-        "username": "peter",
-        "password": "testpass"
-      }
+      { "username": "peter" }
       """
     Then the response code should be 200
-     And the response should contain "token"
 
-  Scenario: User can Login with good credentials (email)
-    When I send a "POST" request to "/login" with body:
-      """
-      {
-        "username": "peter@test.com",
-        "password": "testpass"
-      }
-      """
-    Then the response code should be 200
-     And the response should contain "token"

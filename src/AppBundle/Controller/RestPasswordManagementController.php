@@ -28,20 +28,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Annotations\Prefix("password")
- * @RouteResource("password", pluralize=false)
+ * @RouteResource("password_reset", pluralize=false)
  */
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @Annotations\Post("/reset")
+     * @Annotations\Post("/reset/request")
      */
-    public function postAction(Request $request)
+    public function requestAction(Request $request)
     {
-        exit('aaaaa');
         $username = $request->request->get('username');
 
         /** @var $user UserInterface */
         $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
@@ -54,11 +54,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         }
 
         if (null === $user) {
-            exit('1111');
-
-//            return $this->render('FOSUserBundle:Resetting:request.html.twig', array(
-//                'invalid_username' => $username
-//            ));
+            return new JsonResponse(['Invalid username' => $username], 403);
         }
 
         $event = new GetResponseUserEvent($user, $request);
@@ -68,10 +64,11 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             return $event->getResponse();
         }
 
-        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
-            exit('3333');
-//            return $this->render('FOSUserBundle:Resetting:password_already_requested.html.twig');
-        }
+//        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
+//            return new JsonResponse(sprintf('Password reset request is already in progress. Please check your email: %s',
+//                $this->getObfuscatedEmail($user)
+//            ), 403);
+//        }
 
         if (null === $user->getConfirmationToken()) {
             /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
@@ -86,6 +83,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
+        
         $this->get('fos_user.mailer')->sendResettingEmailMessage($user);
         $user->setPasswordRequestedAt(new \DateTime());
         $this->get('fos_user.user_manager')->updateUser($user);
@@ -98,11 +96,100 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
-//        return new RedirectResponse($this->generateUrl('fos_user_resetting_check_email',
-//            array('email' => $this->getObfuscatedEmail($user))
-//        ));
-        exit('55555');
 
+        return new JsonResponse(sprintf('Password reset request accepted, please check your email: %s',
+            $this->getObfuscatedEmail($user)
+        ));
+    }
+
+
+    /**
+     * Tell the user to check his email provider
+     */
+    public function checkEmailAction(Request $request)
+    {
+        $email = $request->query->get('email');
+
+        if (empty($email)) {
+            // the user does not come from the sendEmail action
+            return new RedirectResponse($this->generateUrl('fos_user_resetting_request'));
+        }
+
+        return $this->render('FOSUserBundle:Resetting:check_email.html.twig', array(
+            'email' => $email,
+        ));
+    }
+
+    /**
+     * Reset user password
+     * @Annotations\Post("/reset/confirm")
+     */
+    public function confirmAction(Request $request, $token)
+    {
+        /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('fos_user.resetting.form.factory');
+        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+        $userManager = $this->get('fos_user.user_manager');
+        /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $user = $userManager->findUserByConfirmationToken($token);
+
+        if (null === $user) {
+            throw new NotFoundHttpException(sprintf('The user with "confirmation token" does not exist for value "%s"', $token));
+        }
+
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_INITIALIZE, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        $form = $formFactory->createForm();
+        $form->setData($user);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $event = new FormEvent($form, $request);
+            $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_SUCCESS, $event);
+
+            $userManager->updateUser($user);
+
+            if (null === $response = $event->getResponse()) {
+//                $url = $this->generateUrl('fos_user_profile_show');
+//                $response = new RedirectResponse($url);
+            }
+
+            $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+            return $response;
+        }
+
+//        return $this->render('FOSUserBundle:Resetting:reset.html.twig', array(
+//            'token' => $token,
+//            'form' => $form->createView(),
+//        ));
+    }
+
+    /**
+     * Get the truncated email displayed when requesting the resetting.
+     *
+     * The default implementation only keeps the part following @ in the address.
+     *
+     * @param \FOS\UserBundle\Model\UserInterface $user
+     *
+     * @return string
+     */
+    protected function getObfuscatedEmail(UserInterface $user)
+    {
+        $email = $user->getEmail();
+        if (false !== $pos = strpos($email, '@')) {
+            $email = '...' . substr($email, $pos);
+        }
+
+        return $email;
     }
 
 }
