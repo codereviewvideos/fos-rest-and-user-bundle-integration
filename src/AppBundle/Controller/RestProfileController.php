@@ -31,7 +31,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RestProfileController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @param UserInterface $user
      * @Get("/profile")
      *
      * @Annotations\View(serializerGroups={
