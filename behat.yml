@@ -1,0 +1,23 @@
+default:
+
+  suites:
+    default:
+      type: symfony_bundle
+      bundle: AppBundle
+      contexts:
+        - FeatureContext:
+            doctrine: "@doctrine"
+        - AppBundle\Features\Context\RestApiContext:
+            client: "@csa_guzzle.client.local_test_api"
+        - AppBundle\Features\Context\MysqlDatabaseContext:
+            em: "@doctrine.orm.entity_manager"
+        - AppBundle\Features\Context\UserSetupContext:
+            userManager: "@fos_user.user_manager"
+            em: "@doctrine.orm.entity_manager"
+
+
+  extensions:
+    Behat\Symfony2Extension:
+      kernel:
+        env: "acceptance"
+        debug: "true"

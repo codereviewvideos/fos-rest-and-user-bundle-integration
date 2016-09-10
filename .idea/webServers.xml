@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="96421bc3-2655-4223-9a9f-94b247278c91" name="api.rest-user-api.dev" url="http://api.rest-user-api.dev">
+        <fileTransfer host="api.rest-user-api.dev" port="22" rootFolder="/var/www/api.rest-user-api.dev" accessType="SFTP" password="dfc2df9edfc4df9fdf9fdf9adfc6df9a" username="a6_chris">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

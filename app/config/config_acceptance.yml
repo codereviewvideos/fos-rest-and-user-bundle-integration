@@ -1,0 +1,23 @@
+imports:
+    - { resource: config_test.yml }
+
+framework:
+    profiler:
+        only_exceptions: false
+        collect: true
+
+web_profiler:
+    toolbar: true
+
+csa_guzzle:
+    logger: true
+    clients:
+        local_test_api:
+            config:
+                base_uri: "http://api.rest-user-api.dev/app_acceptance.php/"
+
+
+
+
+parameters:
+    database_name: "db_acceptance"
