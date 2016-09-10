@@ -1,4 +1,4 @@
-Feature: Manage Users data via the RESTful API
+Feature: Manage User profile data via the RESTful API
 
   In order to allow a user to keep their profile information up to date
   As a client software developer

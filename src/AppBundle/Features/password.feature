@@ -1,8 +1,8 @@
-Feature: Handle user login via the RESTful API
+Feature: Handle password changing via the RESTful API
 
-  In order to allow a user to authenticate with the API
+  In order to allow a user to update their current API credentials
   As a client software developer
-  I need to be able to let users log in and out
+  I need to be able to let users change their password
 
 
   Background:
@@ -10,9 +10,8 @@ Feature: Handle user login via the RESTful API
       | id | username | email          | password |
       | 1  | peter    | peter@test.com | testpass |
       | 2  | john     | john@test.org  | johnpass |
-      | 3  | tim      | tim@blah.net   | timpass  |
+    And I am successfully logged in with username: "peter", and password: "testpass"
     And I set header "Content-Type" with value "application/json"
-
 
 
   Scenario: Cannot GET Login
