@@ -86,16 +86,16 @@ class RestApiContext implements Context
     {
         try {
 
-            $response = $this->getClient()->request('POST', 'login', [
+            $this->response = $this->iSendARequest('POST', 'login', [
                 'json' => [
                     'username' => $username,
                     'password' => $password,
                 ]
             ]);
 
-            \PHPUnit_Framework_Assert::assertEquals(200, $response->getStatusCode());
+            \PHPUnit_Framework_Assert::assertEquals(200, $this->response->getStatusCode());
 
-            $responseBody = json_decode($response->getBody(), true);
+            $responseBody = json_decode($this->response->getBody(), true);
             $this->addHeader('Authorization', 'Bearer ' . $responseBody['token']);
 
         } catch (RequestException $e) {
@@ -142,9 +142,9 @@ class RestApiContext implements Context
     {
         $url = $this->prepareUrl($url);
         $data = $this->prepareData($data);
-        
+
         try {
-            $this->request = $this->getClient()->request($method, $url, $data);
+            $this->response = $this->getClient()->request($method, $url, $data);
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $this->response = $e->getResponse();
@@ -195,16 +195,11 @@ class RestApiContext implements Context
         $url = $this->prepareUrl($url);
         $string = $this->replacePlaceHolder(trim($string));
 
-        $this->request = $this->getClient()->createRequest(
+        $this->request = $this->iSendARequest(
             $method,
             $url,
-            array(
-                'headers' => $this->getHeaders(),
-                'body' => $string,
-            )
+            [ 'body' => $string, ]
         );
-
-        $this->sendRequest();
     }
 
     /**
@@ -503,22 +498,6 @@ class RestApiContext implements Context
     }
 
     /**
-     *
-     */
-    private function sendRequest()
-    {
-        try {
-            $this->response = $this->getClient()->send($this->request);
-        } catch (RequestException $e) {
-            $this->response = $e->getResponse();
-
-            if (null === $this->response) {
-                throw $e;
-            }
-        }
-    }
-
-    /**
      * @return ClientInterface
      */
     private function getClient()
@@ -533,7 +512,10 @@ class RestApiContext implements Context
     private function prepareData($data)
     {
         if (!empty($this->headers)) {
-            $data = array_merge_recursive($data, $this->headers);
+            $data = array_merge_recursive(
+                $data,
+                ["headers" => $this->headers]
+            );
         }
 
         return $data;
