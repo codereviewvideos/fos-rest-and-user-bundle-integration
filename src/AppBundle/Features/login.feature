@@ -38,6 +38,8 @@ Feature: Manage Users data via the RESTful API
       }
       """
     Then the response code should be 200
+     And the response should contain "token"
+
 
   Scenario: User can Login with good credentials (email)
     When I send a "POST" request to "/login" with body:
@@ -48,3 +50,4 @@ Feature: Manage Users data via the RESTful API
       }
       """
     Then the response code should be 200
+     And the response should contain "token"

@@ -27,8 +27,8 @@
           <file leaf-file-name="login.feature" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/login.feature">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="450">
-                  <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+                <state relative-caret-position="600">
+                  <caret line="40" column="5" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
                   <folding />
                 </state>
               </provider>
@@ -53,7 +53,7 @@
           <file leaf-file-name="RestApiContext.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="7316">
+                <state relative-caret-position="2276">
                   <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
                   <folding>
                     <element signature="e#46#78#0#PHP" expanded="true" />
@@ -682,12 +682,12 @@
       <workItem from="1473366272233" duration="867000" />
       <workItem from="1473408515957" duration="2229000" />
       <workItem from="1473410789679" duration="10841000" />
-      <workItem from="1473496450258" duration="2115000" />
+      <workItem from="1473496450258" duration="2291000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16052000" />
+    <option name="totallyTimeSpent" value="16228000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="2672" height="2136" extended-state="4" />
@@ -1101,7 +1101,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7316">
+        <state relative-caret-position="2276">
           <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
           <folding>
             <element signature="e#46#78#0#PHP" expanded="true" />
@@ -1111,8 +1111,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/login.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+        <state relative-caret-position="600">
+          <caret line="40" column="5" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
           <folding />
         </state>
       </provider>
