@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -17,33 +19,33 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @RouteResource("login", pluralize=false)
+ * @RouteResource("profile", pluralize=false)
  */
-class RestLoginController extends FOSRestController implements ClassResourceInterface
+class RestProfileController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @ApiDoc(
-     *   output = "AppBundle\Entity\User",
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when not found"
-     *   }
-     * )
+     * @param UserInterface $user
+     * @Get("/profile")
      *
-     * @throws MethodNotAllowedHttpException
+     * @Annotations\View(serializerGroups={
+     *   "users_all"
+     * })
+     *
+     * Note: Could be refactored to make use of the User Resolver in Symfony 3.2 onwards
+     * more at : http://symfony.com/blog/new-in-symfony-3-2-user-value-resolver-for-controllers
      */
     public function getAction()
     {
-        throw new MethodNotAllowedHttpException(["POST"], "Method not allowed. ");
-    }
+        $user = $this->getUser();
 
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
 
-    public function postAction(Request $request)
-    {
-        // handled by Lexik JWT Bundle
-        throw new \DomainException('You should never see this');
+        return $user;
     }
 
 }

@@ -50,13 +50,3 @@ Feature: Manage Users data via the RESTful API
       """
     Then the response code should be 200
      And the response should contain "token"
-
-     @tags @pending
-  Scenario: User can Logout
-    When I am successfully logged in with username: "peter", and password: "testpass"
-     And I send a "GET" request to "/profile"
-    Then the response code should be 200
-    When I send a "GET" request to "/logout"
-    Then the response code should be 200
-    When I send a "GET" request to "/profile"
-     And the response code should be 401

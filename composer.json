@@ -1,5 +1,6 @@
 {
     "name": "chris/api.rest.user.api.dev",
+    "description": "an example of integration between FOS REST Bundle and FOS User Bundle",
     "license": "proprietary",
     "type": "project",
     "autoload": {

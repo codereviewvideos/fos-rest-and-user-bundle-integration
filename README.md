@@ -1,4 +1,4 @@
-api.rest-user-api.dev
-=====================
+FOS User Bundle with FOS REST Bundle integration
+""""""""""""""""""""""""""""""""""""""""""""""""
 
-A Symfony project created on September 8, 2016, 9:24 pm.
+A work in progress
