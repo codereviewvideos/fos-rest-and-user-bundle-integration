@@ -86,14 +86,14 @@ class RestApiContext implements Context
     {
         try {
 
-            $this->response = $this->iSendARequest('POST', 'login', [
+            $this->iSendARequest('POST', 'login', [
                 'json' => [
                     'username' => $username,
                     'password' => $password,
                 ]
             ]);
 
-            \PHPUnit_Framework_Assert::assertEquals(200, $this->response->getStatusCode());
+            $this->theResponseCodeShouldBe(200);
 
             $responseBody = json_decode($this->response->getBody(), true);
             $this->addHeader('Authorization', 'Bearer ' . $responseBody['token']);

@@ -42,7 +42,6 @@ security:
             pattern:   ^/
             stateless: true
             lexik_jwt: ~
-#            fos_userbundle: ~
 
 
     access_control:

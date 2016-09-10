@@ -39,4 +39,11 @@ class RestLoginController extends FOSRestController implements ClassResourceInte
     {
         throw new MethodNotAllowedHttpException(["POST"], "Method not allowed. ");
     }
+
+        
+    public function postAction(Request $request)
+    {
+        // handled by Lexik JWT Bundle
+        throw new \DomainException('You should never see this');
+    }
 }
