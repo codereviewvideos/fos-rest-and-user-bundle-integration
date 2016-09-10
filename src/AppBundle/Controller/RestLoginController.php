@@ -40,7 +40,7 @@ class RestLoginController extends FOSRestController implements ClassResourceInte
     }
 
 
-    public function postAction(Request $request)
+    public function postAction()
     {
         // handled by Lexik JWT Bundle
         throw new \DomainException('You should never see this');

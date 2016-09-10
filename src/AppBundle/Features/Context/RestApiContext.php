@@ -348,13 +348,10 @@ class RestApiContext implements Context
      */
     public function printResponse()
     {
-        $request = $this->request;
         $response = $this->response;
 
         echo sprintf(
-            "%s %s => %d:\n%s",
-            $request->getMethod(),
-            $request->getUrl(),
+            "%d:\n%s",
             $response->getStatusCode(),
             $response->getBody()
         );
