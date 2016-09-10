@@ -5,10 +5,10 @@ namespace AppBundle\Features\Context;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use GuzzleHttp\Psr7;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Post\PostFile;
+use GuzzleHttp\Psr7;
 use PHPUnit_Framework_Assert as Assertions;
 use Sanpi\Behatch\Json\JsonInspector;
 use Sanpi\Behatch\Json\JsonSchema;
@@ -326,7 +326,7 @@ class RestApiContext implements Context
     public function theResponseShouldContainJson(PyStringNode $jsonString)
     {
         $etalon = json_decode($this->replacePlaceHolder($jsonString->getRaw()), true);
-        $actual = $this->response->json();
+        $actual = json_decode($this->response->getBody(), true);
 
         if (null === $etalon) {
             throw new \RuntimeException(

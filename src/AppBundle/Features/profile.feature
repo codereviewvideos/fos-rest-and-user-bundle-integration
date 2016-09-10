@@ -13,49 +13,16 @@ Feature: Manage Users data via the RESTful API
     And I am successfully logged in with username: "peter", and password: "testpass"
     And I set header "Content-Type" with value "application/json"
 
+@this
+  Scenario: Can view own profile
+    When I send a "GET" request to "/profile"
+    Then the response code should be 200
+     And the response should contain json:
+      """
+      {
+        "id": "1",
+        "username": "peter",
+        "email": "peter@test.com"
+      }
+      """
 
-#  Scenario: Cannot GET Login
-#    When I send a "GET" request to "/login"
-#    Then the response code should be 405
-#
-#  Scenario: User cannot Login with bad credentials
-#    When I send a "POST" request to "/login" with body:
-#      """
-#      {
-#        "username": "jimmy",
-#        "password": "badpass"
-#      }
-#      """
-#    Then the response code should be 401
-#
-#  Scenario: User can Login with good credentials (username)
-#    When I send a "POST" request to "/login" with body:
-#      """
-#      {
-#        "username": "peter",
-#        "password": "testpass"
-#      }
-#      """
-#    Then the response code should be 200
-#     And the response should contain "token"
-#
-#  Scenario: User can Login with good credentials (email)
-#    When I send a "POST" request to "/login" with body:
-#      """
-#      {
-#        "username": "peter@test.com",
-#        "password": "testpass"
-#      }
-#      """
-#    Then the response code should be 200
-#     And the response should contain "token"
-#
-#     @tags @pending
-#  Scenario: User can Logout
-#    When I am successfully logged in with username: "peter", and password: "testpass"
-#     And I send a "GET" request to "/profile"
-#    Then the response code should be 200
-#    When I send a "GET" request to "/logout"
-#    Then the response code should be 200
-#    When I send a "GET" request to "/profile"
-#     And the response code should be 401
