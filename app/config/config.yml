@@ -107,7 +107,7 @@ nelmio_api_doc:
 fos_rest:
     body_listener: true
     format_listener:  true
-    param_fetcher_listener: true
+    param_fetcher_listener: force
     view:
         view_response_listener: 'force'
         formats:

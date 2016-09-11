@@ -64,11 +64,11 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             return $event->getResponse();
         }
 
-//        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
-//            return new JsonResponse(sprintf('Password reset request is already in progress. Please check your email: %s',
-//                $this->getObfuscatedEmail($user)
-//            ), 403);
-//        }
+        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
+            return new JsonResponse(sprintf('Password reset request is already in progress. Please check your email: %s',
+                $this->getObfuscatedEmail($user)
+            ), 403);
+        }
 
         if (null === $user->getConfirmationToken()) {
             /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
@@ -124,8 +124,14 @@ class RestPasswordManagementController extends FOSRestController implements Clas
      * Reset user password
      * @Annotations\Post("/reset/confirm")
      */
-    public function confirmAction(Request $request, $token)
+    public function confirmAction(Request $request)
     {
+        $token = $request->request->get('token', null);
+
+        if (null === $token) {
+            return new JsonResponse('You must submit a token.', Response::HTTP_BAD_REQUEST);
+        }
+
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('fos_user.resetting.form.factory');
         /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
@@ -136,7 +142,10 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $user = $userManager->findUserByConfirmationToken($token);
 
         if (null === $user) {
-            throw new NotFoundHttpException(sprintf('The user with "confirmation token" does not exist for value "%s"', $token));
+            return new JsonResponse(
+                sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         $event = new GetResponseUserEvent($user, $request);
@@ -146,31 +155,30 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             return $event->getResponse();
         }
 
-        $form = $formFactory->createForm();
+        $form = $formFactory->createForm([
+            'csrf_protection'    => false,
+            'allow_extra_fields' => true,
+        ]);
         $form->setData($user);
+        $form->submit($request->request->all());
 
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $event = new FormEvent($form, $request);
-            $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_SUCCESS, $event);
-
-            $userManager->updateUser($user);
-
-            if (null === $response = $event->getResponse()) {
-//                $url = $this->generateUrl('fos_user_profile_show');
-//                $response = new RedirectResponse($url);
-            }
-
-            $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
-
-            return $response;
+        if (!$form->isValid()) {
+            return $form;
         }
 
-//        return $this->render('FOSUserBundle:Resetting:reset.html.twig', array(
-//            'token' => $token,
-//            'form' => $form->createView(),
-//        ));
+        $event = new FormEvent($form, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_SUCCESS, $event);
+
+        $userManager->updateUser($user);
+
+        if (null === $response = $event->getResponse()) {
+            return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+        }
+
+        // unsure if this is now needed / will work the same
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+        return new JsonResponse('Successfully updated password', Response::HTTP_OK);
     }
 
     /**

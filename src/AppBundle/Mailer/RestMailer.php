@@ -66,9 +66,6 @@ class RestMailer implements MailerInterface
         $textBody = $template->renderBlock('body_text', $context);
         $htmlBody = $template->renderBlock('body_html', $context);
 
-        dump($subject);
-        exit();
-
         $message = \Swift_Message::newInstance()
             ->setSubject($subject)
             ->setFrom($fromEmail)
