@@ -2,8 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\User;
-use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -18,12 +16,9 @@ use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormTypeInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -33,27 +28,29 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @Annotations\Post("/reset/request")
+     * @ParamConverter("user", class="AppBundle:User")
+     *
+     * @Annotations\Post("/{user}/reset/request")
      */
-    public function requestResetAction(Request $request)
+    public function requestResetAction(Request $request, UserInterface $user)
     {
         $username = $request->request->get('username');
 
-        /** @var $user UserInterface */
-        $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+        /** @var $fosUser UserInterface */
+        $fosUser = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
 
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
         /* Dispatch init event */
-        $event = new GetResponseNullableUserEvent($user, $request);
+        $event = new GetResponseNullableUserEvent($fosUser, $request);
         $dispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
-        if (null === $user) {
+        if ($this->isValidUser($user)) {
             return new JsonResponse(['Invalid username' => $username], Response::HTTP_FORBIDDEN);
         }
 
@@ -186,15 +183,14 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
     /**
      * Change user password
-     * @Annotations\Post("/change")
+     *
+     * @ParamConverter("user", class="AppBundle:User")
+     *
+     * @Annotations\Post("/{user}/change")
      */
-    public function changeAction(Request $request)
+    public function changeAction(Request $request, UserInterface $user)
     {
-        $user = $this->getUser();
-
-        if (!is_object($user) || !$user instanceof UserInterface) {
-            return new JsonResponse('This user does not have access to this section.', Response::HTTP_UNAUTHORIZED);
-        }
+        $user = $this->isValidUser($user);
 
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
@@ -234,5 +230,15 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
         return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+    }
+
+
+    public function isValidUser(UserInterface $user)
+    {
+        if ($user !== $this->getUser()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $user;
     }
 }
