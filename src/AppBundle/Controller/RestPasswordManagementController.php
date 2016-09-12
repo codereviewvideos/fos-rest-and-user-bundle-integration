@@ -54,7 +54,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         }
 
         if (null === $user) {
-            return new JsonResponse(['Invalid username' => $username], 403);
+            return new JsonResponse(['Invalid username' => $username], Response::HTTP_FORBIDDEN);
         }
 
         $event = new GetResponseUserEvent($user, $request);
@@ -67,7 +67,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
             return new JsonResponse(sprintf('Password reset request is already in progress. Please check your email: %s',
                 $this->getObfuscatedEmail($user)
-            ), 403);
+            ), Response::HTTP_FORBIDDEN);
         }
 
         if (null === $user->getConfirmationToken()) {
