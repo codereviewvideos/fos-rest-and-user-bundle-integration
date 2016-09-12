@@ -33,7 +33,9 @@ class UserSetupContext implements Context, SnippetAcceptingContext
     {
         foreach ($users->getColumnsHash() as $key => $val) {
 
-            $val['confirmation_token'] = '';
+            $confirmationToken = isset($val['confirmation_token']) && $val['confirmation_token'] != ''
+                ? $val['confirmation_token']
+                : null;
 
             $user = $this->userManager->createUser();
 
@@ -41,26 +43,13 @@ class UserSetupContext implements Context, SnippetAcceptingContext
             $user->setUsername($val['username']);
             $user->setEmail($val['email']);
             $user->setPlainPassword($val['password']);
-            $user->setConfirmationToken($val['confirmation_token'] != '' ? $val['confirmation_token'] : null);
+            $user->setConfirmationToken($confirmationToken);
 
-            if ($val['confirmation_token'] !== '') {
+            if ( ! empty($confirmationToken)) {
                 $user->setPasswordRequestedAt(new \DateTime('now'));
             }
 
             $this->userManager->updateUser($user);
-
-//            $qb = $this->em->createQueryBuilder();
-//
-//            $query = $qb->update('AppBundle:User', 'u')
-//                ->where('u.username = :username')
-//                ->andWhere('u.email = :email')
-//                ->setParameters([
-//                    'username' => $val['username'],
-//                    'email'    => $val['email']
-//                ])
-//                ->getQuery();
-//
-//            $query->execute();
         }
     }
 }

@@ -45,7 +45,7 @@ class RestProfileController extends FOSRestController implements ClassResourceIn
         $user = $this->getUser();
 
         if (!is_object($user) || !$user instanceof UserInterface) {
-            throw new AccessDeniedException('This user does not have access to this section.');
+            return new JsonResponse('This user does not have access to this section.', Response::HTTP_UNAUTHORIZED);
         }
 
         return $user;
@@ -97,12 +97,12 @@ class RestProfileController extends FOSRestController implements ClassResourceIn
 
         // there was no override
         if (null === $response = $event->getResponse()) {
-            return $this->routeRedirectView('get_profile', [], 204);
+            return $this->routeRedirectView('get_profile', [], Response::HTTP_NO_CONTENT);
         }
 
         // unsure if this is now needed / will work the same
         $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
-        return $this->routeRedirectView('get_profile', [], 204);
+        return $this->routeRedirectView('get_profile', [], Response::HTTP_NO_CONTENT);
     }
 }

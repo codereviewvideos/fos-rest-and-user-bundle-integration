@@ -28,14 +28,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Annotations\Prefix("password")
- * @RouteResource("password_reset", pluralize=false)
+ * @RouteResource("password", pluralize=false)
  */
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * @Annotations\Post("/reset/request")
      */
-    public function requestAction(Request $request)
+    public function requestResetAction(Request $request)
     {
         $username = $request->request->get('username');
 
@@ -102,29 +102,11 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         ));
     }
 
-
-    /**
-     * Tell the user to check his email provider
-     */
-    public function checkEmailAction(Request $request)
-    {
-        $email = $request->query->get('email');
-
-        if (empty($email)) {
-            // the user does not come from the sendEmail action
-            return new RedirectResponse($this->generateUrl('fos_user_resetting_request'));
-        }
-
-        return $this->render('FOSUserBundle:Resetting:check_email.html.twig', array(
-            'email' => $email,
-        ));
-    }
-
     /**
      * Reset user password
      * @Annotations\Post("/reset/confirm")
      */
-    public function confirmAction(Request $request)
+    public function confirmResetAction(Request $request)
     {
         $token = $request->request->get('token', null);
 
@@ -200,4 +182,57 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         return $email;
     }
 
+
+
+    /**
+     * Change user password
+     * @Annotations\Post("/change")
+     */
+    public function changeAction(Request $request)
+    {
+        $user = $this->getUser();
+
+        if (!is_object($user) || !$user instanceof UserInterface) {
+            return new JsonResponse('This user does not have access to this section.', Response::HTTP_UNAUTHORIZED);
+        }
+
+        /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_INITIALIZE, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('fos_user.change_password.form.factory');
+
+        $form = $formFactory->createForm([
+            'csrf_protection'    => false
+        ]);
+        $form->setData($user);
+        $form->submit($request->request->all());
+
+        if ( ! $form->isValid()) {
+            return $form;
+        }
+
+        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+        $userManager = $this->get('fos_user.user_manager');
+
+        $event = new FormEvent($form, $request);
+        $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_SUCCESS, $event);
+
+        $userManager->updateUser($user);
+
+        if (null === $response = $event->getResponse()) {
+            return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+        }
+
+        $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+        return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+    }
 }

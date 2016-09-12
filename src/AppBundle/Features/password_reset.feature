@@ -1,8 +1,8 @@
 Feature: Handle password changing via the RESTful API
 
-  In order to allow a user to update their current API credentials
+  In order to help users quickly regain access to their account
   As a client software developer
-  I need to be able to let users change their password
+  I need to be able to let users request a password reset
 
 
   Background:
