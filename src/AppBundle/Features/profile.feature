@@ -14,8 +14,14 @@ Feature: Manage User profile data via the RESTful API
     And I set header "Content-Type" with value "application/json"
 
 
+  Scenario: Cannot view a profile with a bad JWT
+    When I set header "Authorization" with value "Bearer bad-token-string"
+     And I send a "GET" request to "/profile/1"
+    Then the response code should be 401
+     And the response should contain "Invalid JWT Token"
+
   Scenario: Can view own profile
-    When I send a "GET" request to "/profile"
+    When I send a "GET" request to "/profile/1"
     Then the response code should be 200
      And the response should contain json:
       """
@@ -26,8 +32,12 @@ Feature: Manage User profile data via the RESTful API
       }
       """
 
+  Scenario: Cannot view another user's profile
+    When I send a "GET" request to "/profile/2"
+    Then the response code should be 403
+
   Scenario: Must supply current password when updating profile information
-    When I send a "PUT" request to "/profile" with body:
+    When I send a "PUT" request to "/profile/1" with body:
       """
       {
         "email": "new_email@test.com"
@@ -36,7 +46,7 @@ Feature: Manage User profile data via the RESTful API
     Then the response code should be 400
 
   Scenario: Can replace their own profile
-    When I send a "PUT" request to "/profile" with body:
+    When I send a "PUT" request to "/profile/1" with body:
       """
       {
         "username": "peter",
@@ -45,7 +55,7 @@ Feature: Manage User profile data via the RESTful API
       }
       """
     Then the response code should be 204
-     And I send a "GET" request to "/profile"
+     And I send a "GET" request to "/profile/1"
      And the response should contain json:
       """
       {
@@ -55,8 +65,19 @@ Feature: Manage User profile data via the RESTful API
       }
       """
 
+  Scenario: Cannot replace another user's profile
+    When I send a "PUT" request to "/profile/2" with body:
+      """
+      {
+        "username": "peter",
+        "email": "new_email@test.com",
+        "current_password": "testpass"
+      }
+      """
+    Then the response code should be 403
+
   Scenario: Can update their own profile
-    When I send a "PATCH" request to "/profile" with body:
+    When I send a "PATCH" request to "/profile/1" with body:
       """
       {
         "email": "different_email@test.com",
@@ -64,7 +85,7 @@ Feature: Manage User profile data via the RESTful API
       }
       """
     Then the response code should be 204
-    And I send a "GET" request to "/profile"
+    And I send a "GET" request to "/profile/1"
     And the response should contain json:
       """
       {
@@ -73,3 +94,14 @@ Feature: Manage User profile data via the RESTful API
         "email": "different_email@test.com"
       }
       """
+
+  Scenario: Cannot update another user's profile
+    When I send a "PATCH" request to "/profile/2" with body:
+      """
+      {
+        "username": "peter",
+        "email": "new_email@test.com",
+        "current_password": "testpass"
+      }
+      """
+    Then the response code should be 403

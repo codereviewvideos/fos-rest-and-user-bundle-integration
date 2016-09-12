@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f097f6c1-67a1-467f-88f0-de97c8797fc8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/routing.yml" afterPath="$PROJECT_DIR$/app/config/routing.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/routing_rest.yml" afterPath="$PROJECT_DIR$/app/config/routing_rest.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/RestLoginController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/RestLoginController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php" afterPath="$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Features/login.feature" afterPath="$PROJECT_DIR$/src/AppBundle/Features/login.feature" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Features/profile.feature" afterPath="$PROJECT_DIR$/src/AppBundle/Features/profile.feature" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Features/register.feature" afterPath="$PROJECT_DIR$/src/AppBundle/Features/register.feature" />
     </list>
     <ignored path="api.rest-user-api.dev.iws" />
@@ -35,8 +33,8 @@
           <file leaf-file-name="RestApiContext.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="653">
-                  <caret line="397" column="63" selection-start-line="397" selection-start-column="63" selection-end-line="397" selection-end-column="63" />
+                <state relative-caret-position="7770">
+                  <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
                   <folding>
                     <element signature="e#46#78#0#PHP" expanded="true" />
                   </folding>
@@ -47,8 +45,8 @@
           <file leaf-file-name="register.feature" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/register.feature">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="210">
-                  <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+                <state relative-caret-position="330">
+                  <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
                   <folding />
                 </state>
               </provider>
@@ -67,8 +65,28 @@
           <file leaf-file-name="profile.feature" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/profile.feature">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="180">
-                  <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+                <state relative-caret-position="1455">
+                  <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="password_reset.feature" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_reset.feature">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="60">
+                  <caret line="4" column="57" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="password_change.feature" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_change.feature">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="270">
+                  <caret line="18" column="7" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
                   <folding />
                 </state>
               </provider>
@@ -100,11 +118,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="RestRegistrationController.php" pinned="false" current-in-tab="true">
+          <file leaf-file-name="RestRegistrationController.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="60">
-                  <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+                <state relative-caret-position="15">
+                  <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
                   <folding>
                     <element signature="e#40#82#0#PHP" expanded="true" />
                   </folding>
@@ -112,11 +130,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="RestProfileController.php" pinned="false" current-in-tab="false">
+          <file leaf-file-name="RestProfileController.php" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="330">
-                  <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
+                <state relative-caret-position="390">
+                  <caret line="48" column="48" selection-start-line="48" selection-start-column="48" selection-end-line="48" selection-end-column="48" />
                   <folding />
                 </state>
               </provider>
@@ -198,7 +216,6 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/User.php" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/composer.json" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Features/profile.feature" />
         <option value="$PROJECT_DIR$/app/Resources/FOSUserBundle/views/Resetting/request_content.html.twig" />
         <option value="$PROJECT_DIR$/vendor/friendsofsymfony/user-bundle/Mailer/Mailer.php" />
         <option value="$PROJECT_DIR$/app/config/services.yml" />
@@ -210,16 +227,17 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Features/Context/UserSetupContext.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Features/password.feature" />
         <option value="$PROJECT_DIR$/src/AppBundle/Features/password_reset.feature" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php" />
         <option value="$PROJECT_DIR$/app/config/security.yml" />
         <option value="$PROJECT_DIR$/src/AppBundle/Features/password_change.feature" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/RestPasswordManagementController.php" />
         <option value="$PROJECT_DIR$/app/config/routing_rest.yml" />
         <option value="$PROJECT_DIR$/app/config/routing.yml" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/RestLoginController.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Features/login.feature" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Features/profile.feature" />
         <option value="$PROJECT_DIR$/src/AppBundle/Features/register.feature" />
       </list>
     </option>
@@ -756,12 +774,12 @@
       <workItem from="1473593156256" duration="1026000" />
       <workItem from="1473619352830" duration="3665000" />
       <workItem from="1473671687996" duration="4253000" />
-      <workItem from="1473692985049" duration="5553000" />
+      <workItem from="1473692985049" duration="8684000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45927000" />
+    <option name="totallyTimeSpent" value="49058000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="52" width="2860" height="2108" extended-state="0" />
@@ -1041,13 +1059,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_reset.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="57" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/friendsofsymfony/user-bundle/Form/Type/ChangePasswordFormType.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -1098,14 +1109,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/profile.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/config/routing_rest.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -1138,18 +1141,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding>
+            <element signature="e#40#82#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7770">
+          <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
+          <folding>
+            <element signature="e#46#78#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/RestProfileController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
+        <state relative-caret-position="390">
+          <caret line="48" column="48" selection-start-line="48" selection-start-column="48" selection-end-line="48" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_change.feature">
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/profile.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="7" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
+        <state relative-caret-position="1455">
+          <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1162,30 +1185,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/Context/RestApiContext.php">
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_change.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="397" column="63" selection-start-line="397" selection-start-column="63" selection-end-line="397" selection-end-column="63" />
-          <folding>
-            <element signature="e#46#78#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="270">
+          <caret line="18" column="7" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/RestRegistrationController.php">
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/password_reset.feature">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding>
-            <element signature="e#40#82#0#PHP" expanded="true" />
-          </folding>
+          <caret line="4" column="57" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Features/register.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state relative-caret-position="330">
+          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
           <folding />
         </state>
       </provider>

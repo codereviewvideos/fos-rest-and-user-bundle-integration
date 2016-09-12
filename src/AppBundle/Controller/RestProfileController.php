@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -31,39 +32,62 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RestProfileController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @Get("/profile")
+     * @Get("/profile/{user}")
      *
      * @Annotations\View(serializerGroups={
      *   "users_all"
      * })
      *
+     * @ParamConverter("user", class="AppBundle:User")
+     *
      * Note: Could be refactored to make use of the User Resolver in Symfony 3.2 onwards
      * more at : http://symfony.com/blog/new-in-symfony-3-2-user-value-resolver-for-controllers
      */
-    public function getAction()
+    public function getAction(UserInterface $user)
     {
-        $user = $this->getUser();
-
-        if (!is_object($user) || !$user instanceof UserInterface) {
-            return new JsonResponse('This user does not have access to this section.', Response::HTTP_UNAUTHORIZED);
+        if ($user !== $this->getUser()) {
+            throw new AccessDeniedHttpException();
         }
 
         return $user;
     }
 
-    public function putAction(Request $request)
+    /**
+     * @param Request       $request
+     * @param UserInterface $user
+     *
+     * @ParamConverter("user", class="AppBundle:User")
+     *
+     * @return View|\Symfony\Component\Form\FormInterface
+     */
+    public function putAction(Request $request, UserInterface $user)
     {
-        return $this->updateProfile($request, true);
+        return $this->updateProfile($request, true, $user);
     }
 
-    public function patchAction(Request $request)
+    /**
+     * @param Request       $request
+     * @param UserInterface $user
+     *
+     * @ParamConverter("user", class="AppBundle:User")
+     *
+     * @return View|\Symfony\Component\Form\FormInterface
+     */
+    public function patchAction(Request $request, UserInterface $user)
     {
-        return $this->updateProfile($request, false);
+        return $this->updateProfile($request, false, $user);
     }
 
-    private function updateProfile(Request $request, $clearMissing = true)
+    /**
+     * @param Request       $request
+     * @param bool          $clearMissing
+     * @param UserInterface $user
+     *
+     * @return View|null|\Symfony\Component\Form\FormInterface|Response
+     */
+    private function updateProfile(Request $request, $clearMissing = true, UserInterface $user)
     {
-        $user = $this->getAction();
+        $user = $this->getAction($user);
 
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
@@ -97,12 +121,12 @@ class RestProfileController extends FOSRestController implements ClassResourceIn
 
         // there was no override
         if (null === $response = $event->getResponse()) {
-            return $this->routeRedirectView('get_profile', [], Response::HTTP_NO_CONTENT);
+            return $this->routeRedirectView('get_profile', ['user' => $user->getId()], Response::HTTP_NO_CONTENT);
         }
 
         // unsure if this is now needed / will work the same
         $dispatcher->dispatch(FOSUserEvents::PROFILE_EDIT_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
-        return $this->routeRedirectView('get_profile', [], Response::HTTP_NO_CONTENT);
+        return $this->routeRedirectView('get_profile', ['user' => $user->getId()], Response::HTTP_NO_CONTENT);
     }
 }

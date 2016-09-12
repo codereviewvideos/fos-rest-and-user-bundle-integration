@@ -143,6 +143,8 @@ class RestApiContext implements Context
         $url = $this->prepareUrl($url);
         $data = $this->prepareData($data);
 
+//        print_r($data);
+
         try {
             $this->response = $this->getClient()->request($method, $url, $data);
         } catch (RequestException $e) {
@@ -471,15 +473,15 @@ class RestApiContext implements Context
      */
     protected function addHeader($name, $value)
     {
-        if (isset($this->headers[$name])) {
-            if (!is_array($this->headers[$name])) {
-                $this->headers[$name] = array($this->headers[$name]);
-            }
-
-            $this->headers[$name][] = $value;
-        } else {
+        if ( ! isset($this->headers[$name])) {
             $this->headers[$name] = $value;
         }
+
+        if (!is_array($this->headers[$name])) {
+            $this->headers[$name] = [$this->headers[$name]];
+        }
+
+        $this->headers[$name] = $value;
     }
 
     /**
@@ -509,7 +511,7 @@ class RestApiContext implements Context
     private function prepareData($data)
     {
         if (!empty($this->headers)) {
-            $data = array_merge_recursive(
+            $data = array_replace(
                 $data,
                 ["headers" => $this->headers]
             );

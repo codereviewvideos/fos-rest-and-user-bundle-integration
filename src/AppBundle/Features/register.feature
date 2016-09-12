@@ -11,7 +11,7 @@ Feature: Handle user registration via the RESTful API
       | 1  | peter    | peter@test.com | testpass |
     And I set header "Content-Type" with value "application/json"
 
-
+  @this
   Scenario: Can register with valid data
     When I send a "POST" request to "/register" with body:
       """
@@ -27,7 +27,7 @@ Feature: Handle user registration via the RESTful API
     Then the response code should be 201
      And the response should contain "Registration successful"
     When I am successfully logged in with username: "garold", and password: "gaz123"
-     And I send a "GET" request to "/profile"
+     And I send a "GET" request to "/profile/2"
      And the response should contain json:
       """
       {
