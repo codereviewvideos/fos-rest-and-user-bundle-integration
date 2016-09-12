@@ -23,23 +23,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class RestLoginController extends FOSRestController implements ClassResourceInterface
 {
-    /**
-     * @ApiDoc(
-     *   output = "AppBundle\Entity\User",
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when not found"
-     *   }
-     * )
-     *
-     * @throws MethodNotAllowedHttpException
-     */
-    public function getAction()
-    {
-        throw new MethodNotAllowedHttpException(["POST"], "Method not allowed. ");
-    }
-
-
     public function postAction()
     {
         // handled by Lexik JWT Bundle

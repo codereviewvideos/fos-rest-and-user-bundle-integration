@@ -12,102 +12,72 @@ Feature: Handle user registration via the RESTful API
     And I set header "Content-Type" with value "application/json"
 
 
-#  ############################
-#  ## Password Reset Request ##
-#  ############################
-#
-#  Scenario: Cannot request a password reset for an invalid username
-#    When I send a "POST" request to "/password/reset/request" with body:
-#      """
-#      { "username": "davey" }
-#      """
-#    Then the response code should be 403
-#     And the response should contain "Invalid username"
-#
-#
-#  Scenario: Can request a password reset for a valid username
-#    When I send a "POST" request to "/password/reset/request" with body:
-#      """
-#      { "username": "peter" }
-#      """
-#    Then the response code should be 200
-#     And the response should contain "Password reset request accepted, please check your email"
-#
-#  Scenario: Cannot request another password reset for an account already requesting, but not yet actioning the reset request
-#     When I send a "POST" request to "/password/reset/request" with body:
-#      """
-#      { "username": "john" }
-#      """
-#    Then the response code should be 403
-#     And the response should contain "Password reset request is already in progress. Please check your email"
-#
-#
+  Scenario: Can register with valid data
+    When I send a "POST" request to "/register" with body:
+      """
+      {
+        "email": "gary@test.co.uk",
+        "username": "garold",
+        "plainPassword": {
+          "first": "gaz123",
+          "second": "gaz123"
+        }
+      }
+      """
+    Then the response code should be 201
+     And the response should contain "Registration successful"
+    When I am successfully logged in with username: "garold", and password: "gaz123"
+     And I send a "GET" request to "/profile"
+     And the response should contain json:
+      """
+      {
+        "id": "2",
+        "username": "garold",
+        "email": "gary@test.co.uk"
+      }
+      """
 
-#  ############################
-#  ## Password Reset Confirm ##
-#  ############################
-#
-#  Scenario: Cannot confirm without a token
-#    When I send a "POST" request to "/password/reset/confirm" with body:
-#      """
-#      { "bad": "data" }
-#      """
-#    Then the response code should be 400
-#    And the response should contain "You must submit a token"
-#
-#  Scenario: Cannot confirm with an invalid token
-#    When I send a "POST" request to "/password/reset/confirm" with body:
-#      """
-#      { "token": "invalid token string" }
-#      """
-#    Then the response code should be 400
-#
-#  Scenario: Cannot confirm without a valid new password
-#    When I send a "POST" request to "/password/reset/confirm" with body:
-#      """
-#      {
-#        "token": "some-token-string",
-#        "plainPassword": {
-#          "second": "first-is-missing"
-#        }
-#      }
-#      """
-#    Then the response code should be 400
-#     And the response should contain "The entered passwords don't match"
-#
-#  Scenario: Cannot confirm with a mismatched password and confirmation
-#    When I send a "POST" request to "/password/reset/confirm" with body:
-#      """
-#      {
-#        "token": "some-token-string",
-#        "plainPassword": {
-#          "first": "some password",
-#          "second": "oops"
-#        }
-#      }
-#      """
-#    Then the response code should be 400
-#    And the response should contain "The entered passwords don't match"
-#
-#  Scenario: Can confirm with valid new password
-#    When I send a "POST" request to "/password/reset/confirm" with body:
-#      """
-#      {
-#        "token": "some-token-string",
-#        "plainPassword": {
-#          "first": "new password",
-#          "second": "new password"
-#        }
-#      }
-#      """
-#    Then the response code should be 200
-#     And the response should contain "Successfully updated password"
-#     And I send a "POST" request to "/login" with body:
-#      """
-#      {
-#        "username": "john",
-#        "password": "new password"
-#      }
-#      """
-#    Then the response code should be 200
-#     And the response should contain "token"
+  Scenario: Cannot register with existing user name
+    When I send a "POST" request to "/register" with body:
+      """
+      {
+        "email": "gary@test.co.uk",
+        "username": "peter",
+        "plainPassword": {
+          "first": "gaz123",
+          "second": "gaz123"
+        }
+      }
+      """
+    Then the response code should be 400
+     And the response should contain "The username is already used"
+
+  Scenario: Cannot register with an existing email address
+    When I send a "POST" request to "/register" with body:
+      """
+      {
+        "email": "peter@test.com",
+        "username": "garold",
+        "plainPassword": {
+          "first": "gaz123",
+          "second": "gaz123"
+        }
+      }
+      """
+    Then the response code should be 400
+     And the response should contain "The email is already used"
+
+  Scenario: Cannot register with an mismatched password
+    When I send a "POST" request to "/register" with body:
+      """
+      {
+        "email": "gary@test.co.uk",
+        "username": "garold",
+        "plainPassword": {
+          "first": "gaz123",
+          "second": "gaz456"
+        }
+      }
+      """
+    Then the response code should be 400
+    And the response should contain "The entered passwords don't match"

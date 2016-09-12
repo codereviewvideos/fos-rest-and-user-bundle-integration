@@ -14,7 +14,6 @@ Feature: Handle user login via the RESTful API
     And I set header "Content-Type" with value "application/json"
 
 
-
   Scenario: Cannot GET Login
     When I send a "GET" request to "/login"
     Then the response code should be 405

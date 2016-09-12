@@ -1,6 +1,6 @@
-fos_user_rest:
-    type: rest
-    resource: AppBundle\Controller\FosUserRestController
+#fos_user_rest:
+#    type: rest
+#    resource: AppBundle\Controller\FosUserRestController
 
 
 api_login_check:

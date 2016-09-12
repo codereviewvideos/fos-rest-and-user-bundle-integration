@@ -3,11 +3,16 @@ login:
     resource: AppBundle\Controller\RestLoginController
 
 
+password_management:
+    type: rest
+    resource: AppBundle\Controller\RestPasswordManagementController
+
+
 profile:
     type: rest
     resource: AppBundle\Controller\RestProfileController
 
 
-password_management:
+registration:
     type: rest
-    resource: AppBundle\Controller\RestPasswordManagementController
+    resource: AppBundle\Controller\RestRegistrationController

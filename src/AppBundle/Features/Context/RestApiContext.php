@@ -393,11 +393,11 @@ class RestApiContext implements Context
     }
 
     /**
-     * @Then the I follow the link in the Location response header
+     * @Then I follow the link in the Location response header
      */
-    public function theIFollowTheLinkInTheLocationResponseHeader()
+    public function iFollowTheLinkInTheLocationResponseHeader()
     {
-        $location = $this->response->getHeader('Location');
+        $location = $this->response->getHeader('Location')[0];
 
         $this->iSendARequest(Request::METHOD_GET, $location);
     }
