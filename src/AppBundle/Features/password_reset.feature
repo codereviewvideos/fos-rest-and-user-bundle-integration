@@ -25,6 +25,7 @@ Feature: Handle password changing via the RESTful API
     Then the response code should be 403
      And the response should contain "Invalid username"
 
+  @this
   Scenario: Can request a password reset for a valid username
     When I send a "POST" request to "/password/reset/request" with body:
       """
