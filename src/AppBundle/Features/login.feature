@@ -1,6 +1,6 @@
 Feature: Handle user login via the RESTful API
 
-  In order to allow a user to authenticate with the API
+  In order to allow secure access to the system
   As a client software developer
   I need to be able to let users log in and out
 
