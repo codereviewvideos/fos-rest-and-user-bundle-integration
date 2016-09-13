@@ -65,7 +65,10 @@ class RestRegistrationController extends FOSRestController implements ClassResou
         $userManager->updateUser($user);
 
         if (null === $response = $event->getResponse()) {
-            return new JsonResponse('Registration successful', Response::HTTP_CREATED);
+            return new JsonResponse(
+                $this->get('translator')->trans('registration.flash.user_created', [], 'FOSUserBundle'),
+                Response::HTTP_CREATED
+            );
         }
 
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
