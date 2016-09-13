@@ -11,7 +11,7 @@ Feature: Handle user login via the RESTful API
       | 1  | peter    | peter@test.com | testpass |
       | 2  | john     | john@test.org  | johnpass |
       | 3  | tim      | tim@blah.net   | timpass  |
-    And I set header "Content-Type" with value "application/json"
+     And I set header "Content-Type" with value "application/json"
 
 
   Scenario: Cannot GET Login

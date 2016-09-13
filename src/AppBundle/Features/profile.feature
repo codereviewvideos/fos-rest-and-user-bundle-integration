@@ -10,8 +10,8 @@ Feature: Manage User profile data via the RESTful API
       | id | username | email          | password |
       | 1  | peter    | peter@test.com | testpass |
       | 2  | john     | john@test.org  | johnpass |
-    And I am successfully logged in with username: "peter", and password: "testpass"
-    And I set header "Content-Type" with value "application/json"
+     And I am successfully logged in with username: "peter", and password: "testpass"
+     And I set header "Content-Type" with value "application/json"
 
 
   Scenario: Cannot view a profile with a bad JWT
@@ -86,8 +86,8 @@ Feature: Manage User profile data via the RESTful API
       }
       """
     Then the response code should be 204
-    And I send a "GET" request to "/profile/1"
-    And the response should contain json:
+     And I send a "GET" request to "/profile/1"
+     And the response should contain json:
       """
       {
         "id": "1",

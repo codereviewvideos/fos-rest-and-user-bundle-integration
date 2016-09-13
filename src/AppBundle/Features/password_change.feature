@@ -14,7 +14,7 @@ Feature: Handle password changing via the RESTful API
 
 
   Scenario: Cannot hit the change password endpoint if not logged in (missing token)
-     And I send a "POST" request to "/password/1/change" with body:
+    When I send a "POST" request to "/password/1/change" with body:
       """
       {
         "current_password": "testpass",
@@ -28,7 +28,7 @@ Feature: Handle password changing via the RESTful API
 
   Scenario: Cannot change the password for a different user
     When I am successfully logged in with username: "peter", and password: "testpass"
-    And I send a "POST" request to "/password/2/change" with body:
+     And I send a "POST" request to "/password/2/change" with body:
       """
       {
         "current_password": "testpass",
@@ -53,7 +53,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 200
-    And the response should contain "Successfully updated password"
+     And the response should contain "Successfully updated password"
 
   Scenario: Cannot change password with bad current password
     When I am successfully logged in with username: "peter", and password: "testpass"
@@ -83,7 +83,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-    And the response should contain "The entered passwords don't match"
+     And the response should contain "The entered passwords don't match"
 
   Scenario: Cannot change password with missing new password field
     When I am successfully logged in with username: "peter", and password: "testpass"
@@ -97,4 +97,4 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-    And the response should contain "The entered passwords don't match"
+     And the response should contain "The entered passwords don't match"
