@@ -10,7 +10,7 @@ Feature: Handle password changing via the RESTful API
       | id | username | email          | password | confirmation_token |
       | 1  | peter    | peter@test.com | testpass |                    |
       | 2  | john     | john@test.org  | johnpass | some-token-string  |
-    And I set header "Content-Type" with value "application/json"
+     And I set header "Content-Type" with value "application/json"
 
 
   ############################
