@@ -291,7 +291,7 @@ class RestApiContext implements Context
      *
      * @param string $text
      *
-     * @Then /^(?:the )?response should contain "([^"]*)"$/
+     * @Then /^(?:the )?response should contain "((?:[^"]|\\")*)"$/
      */
     public function theResponseShouldContain($text)
     {

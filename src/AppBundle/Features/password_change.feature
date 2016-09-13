@@ -53,7 +53,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 200
-     And the response should contain "Successfully updated password"
+     And the response should contain "The password has been changed"
 
   Scenario: Cannot change password with bad current password
     When I am successfully logged in with username: "peter", and password: "testpass"
@@ -68,7 +68,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-    And the response should contain "This value should be the user's current password."
+     And the response should contain "This value should be the user's current password."
 
   Scenario: Cannot change password with mismatched new password
     When I am successfully logged in with username: "peter", and password: "testpass"

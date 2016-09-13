@@ -45,7 +45,6 @@ Feature: Manage User profile data via the RESTful API
       """
     Then the response code should be 400
 
-    @fail
   Scenario: Can replace their own profile
     When I send a "PUT" request to "/profile/1" with body:
       """

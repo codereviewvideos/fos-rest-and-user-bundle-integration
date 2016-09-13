@@ -49,7 +49,14 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         }
 
         if (null === $user) {
-            return new JsonResponse(['Invalid username' => $username], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(
+                $this->get('translator')->trans(
+                    'resetting.request.invalid_username',
+                    [ '%username%' => $username ],
+                    'FOSUserBundle'
+                ),
+                Response::HTTP_FORBIDDEN
+            );
         }
 
         $event = new GetResponseUserEvent($user, $request);
@@ -60,9 +67,10 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         }
 
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
-            return new JsonResponse(sprintf('Password reset request is already in progress. Please check your email: %s',
-                $this->getObfuscatedEmail($user)
-            ), Response::HTTP_FORBIDDEN);
+            return new JsonResponse(
+                $this->get('translator')->trans('resetting.password_already_requested', [], 'FOSUserBundle'),
+                Response::HTTP_FORBIDDEN
+            );
         }
 
         if (null === $user->getConfirmationToken()) {
@@ -92,9 +100,14 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             return $event->getResponse();
         }
 
-        return new JsonResponse(sprintf('Password reset request accepted, please check your email: %s',
-            $this->getObfuscatedEmail($user)
-        ));
+        return new JsonResponse(
+            $this->get('translator')->trans(
+                'resetting.check_email',
+                [ '%email%' => $this->getObfuscatedEmail($user) ],
+                'FOSUserBundle'
+            ),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -120,6 +133,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         if (null === $user) {
             return new JsonResponse(
+                // no translation provided for this in \FOS\UserBundle\Controller\ResettingController
                 sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
                 Response::HTTP_BAD_REQUEST
             );
@@ -149,13 +163,19 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $userManager->updateUser($user);
 
         if (null === $response = $event->getResponse()) {
-            return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+            return new JsonResponse(
+                $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
+                Response::HTTP_OK
+            );
         }
 
         // unsure if this is now needed / will work the same
         $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
-        return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+        return new JsonResponse(
+            $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -224,11 +244,17 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $userManager->updateUser($user);
 
         if (null === $response = $event->getResponse()) {
-            return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+            return new JsonResponse(
+                $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
+                Response::HTTP_OK
+            );
         }
 
         $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
-        return new JsonResponse('Successfully updated password', Response::HTTP_OK);
+        return new JsonResponse(
+            $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
+            Response::HTTP_OK
+        );
     }
 }
