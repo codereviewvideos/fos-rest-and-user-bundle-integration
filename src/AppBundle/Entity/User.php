@@ -47,38 +47,10 @@ class User extends BaseUser
     protected $email;
 
     /**
-     * @var string Plain password. Used for model validation. Must not be persisted.
-     */
-    protected $plainPassword;
-
-    /**
-     * @var boolean Shows that the user is enabled
-     */
-    protected $enabled;
-
-    /**
-     * @var array Array, role(s) of the user
-     */
-    protected $roles;
-
-    /**
      * User constructor.
      */
     public function __construct()
     {
         parent::__construct();
-
-        $this->accounts = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    function jsonSerialize()
-    {
-        return [
-            'id'       => $this->id,
-            'username' => $this->username,
-        ];
     }
 }

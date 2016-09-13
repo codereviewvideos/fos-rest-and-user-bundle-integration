@@ -13,7 +13,6 @@ use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * @RouteResource("registration", pluralize=false)
@@ -64,9 +63,6 @@ class RestRegistrationController extends FOSRestController implements ClassResou
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
 
         $userManager->updateUser($user);
-
-        $token = new UsernamePasswordToken($user, null, 'api', $user->getRoles());
-        $this->get('security.token_storage')->setToken($token);
 
         if (null === $response = $event->getResponse()) {
             return new JsonResponse('Registration successful', Response::HTTP_CREATED);

@@ -12,7 +12,7 @@ Feature: Handle password changing via the RESTful API
       | 2  | john     | john@test.org  | johnpass | some-token-string  |
      And I set header "Content-Type" with value "application/json"
 
-@this @fail
+
   Scenario: Cannot hit the change password endpoint if not logged in (missing token)
      And I send a "POST" request to "/password/1/change" with body:
       """
@@ -26,7 +26,6 @@ Feature: Handle password changing via the RESTful API
       """
     Then the response code should be 401
 
-  @this
   Scenario: Cannot change the password for a different user
     When I am successfully logged in with username: "peter", and password: "testpass"
     And I send a "POST" request to "/password/2/change" with body:
@@ -39,9 +38,8 @@ Feature: Handle password changing via the RESTful API
         }
       }
       """
-    Then the response code should be 401
+    Then the response code should be 403
 
-  @this
   Scenario: Can change password with valid credentials
     When I am successfully logged in with username: "peter", and password: "testpass"
      And I send a "POST" request to "/password/1/change" with body:
@@ -57,7 +55,6 @@ Feature: Handle password changing via the RESTful API
     Then the response code should be 200
     And the response should contain "Successfully updated password"
 
-  @this
   Scenario: Cannot change password with bad current password
     When I am successfully logged in with username: "peter", and password: "testpass"
      And I send a "POST" request to "/password/1/change" with body:
@@ -73,7 +70,6 @@ Feature: Handle password changing via the RESTful API
     Then the response code should be 400
     And the response should contain "This value should be the user's current password."
 
-  @this
   Scenario: Cannot change password with mismatched new password
     When I am successfully logged in with username: "peter", and password: "testpass"
      And I send a "POST" request to "/password/1/change" with body:
@@ -89,7 +85,6 @@ Feature: Handle password changing via the RESTful API
     Then the response code should be 400
     And the response should contain "The entered passwords don't match"
 
-  @this
   Scenario: Cannot change password with missing new password field
     When I am successfully logged in with username: "peter", and password: "testpass"
      And I send a "POST" request to "/password/1/change" with body:

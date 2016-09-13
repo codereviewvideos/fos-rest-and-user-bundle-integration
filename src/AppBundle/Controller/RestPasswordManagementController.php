@@ -28,29 +28,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @ParamConverter("user", class="AppBundle:User")
-     *
-     * @Annotations\Post("/{user}/reset/request")
+     * @Annotations\Post("/reset/request")
      */
-    public function requestResetAction(Request $request, UserInterface $user)
+    public function requestResetAction(Request $request)
     {
         $username = $request->request->get('username');
 
-        /** @var $fosUser UserInterface */
-        $fosUser = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+        /** @var $user UserInterface */
+        $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
 
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
         /* Dispatch init event */
-        $event = new GetResponseNullableUserEvent($fosUser, $request);
+        $event = new GetResponseNullableUserEvent($user, $request);
         $dispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
-        if ($this->isValidUser($user)) {
+        if (null === $user) {
             return new JsonResponse(['Invalid username' => $username], Response::HTTP_FORBIDDEN);
         }
 
@@ -190,7 +188,9 @@ class RestPasswordManagementController extends FOSRestController implements Clas
      */
     public function changeAction(Request $request, UserInterface $user)
     {
-        $user = $this->isValidUser($user);
+        if ($user !== $this->getUser()) {
+            throw new AccessDeniedHttpException();
+        }
 
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
@@ -230,15 +230,5 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
         return new JsonResponse('Successfully updated password', Response::HTTP_OK);
-    }
-
-
-    public function isValidUser(UserInterface $user)
-    {
-        if ($user !== $this->getUser()) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $user;
     }
 }
