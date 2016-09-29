@@ -75,11 +75,6 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: api
     user_class: AppBundle\Entity\User
-    from_email:
-        address:        support@mywebsite.com
-        sender_name:    mr_mailer
-    service:
-        mailer: user.mailer.rest
 
 
 # Nelmio CORS
@@ -109,8 +104,6 @@ fos_rest:
             rss: false
         mime_types:
             json: ['application/json', 'application/x-json']
-            jpg: ['image/jpeg']
-            png: ['image/png']
     routing_loader:
         default_format:  json
         include_format:  false
@@ -120,9 +113,6 @@ fos_rest:
             - { path: ^/, priorities: [ json ], fallback_format: json, prefer_extension: true }
     exception:
         enabled: true
-#    versioning:
-#        enabled: true
-#        default_version: v1
 
 
 #JMS Serializer
