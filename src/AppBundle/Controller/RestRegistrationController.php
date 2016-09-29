@@ -64,9 +64,16 @@ class RestRegistrationController extends FOSRestController implements ClassResou
 
         $userManager->updateUser($user);
 
+        $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');
+
+        $jwt = $jwtManager->create($user);
+
         if (null === $response = $event->getResponse()) {
             return new JsonResponse(
-                $this->get('translator')->trans('registration.flash.user_created', [], 'FOSUserBundle'),
+                [
+                    'msg' => $this->get('translator')->trans('registration.flash.user_created', [], 'FOSUserBundle'),
+                    'token' => $jwt,
+                ],
                 Response::HTTP_CREATED
             );
         }

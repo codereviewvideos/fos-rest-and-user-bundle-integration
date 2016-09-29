@@ -9,8 +9,6 @@ default:
             doctrine: "@doctrine"
         - AppBundle\Features\Context\RestApiContext:
             client: "@csa_guzzle.client.local_test_api"
-        - AppBundle\Features\Context\MysqlDatabaseContext:
-            em: "@doctrine.orm.entity_manager"
         - AppBundle\Features\Context\UserSetupContext:
             userManager: "@fos_user.user_manager"
             em: "@doctrine.orm.entity_manager"

@@ -1,19 +1,17 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context, SnippetAcceptingContext
+class FeatureContext implements Context
 {
     private $doctrine;
     private $manager;
     private $schemaTool;
     private $classes;
+
     /**
      * Initializes context.
      *
@@ -28,6 +26,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->manager);
         $this->classes = $this->manager->getMetadataFactory()->getAllMetadata();
     }
+
     /**
      * @BeforeScenario
      */

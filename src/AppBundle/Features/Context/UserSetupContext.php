@@ -7,7 +7,6 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use PhpSpec\Exception\Example\PendingException;
 
 class UserSetupContext implements Context, SnippetAcceptingContext
 {
@@ -20,6 +19,12 @@ class UserSetupContext implements Context, SnippetAcceptingContext
      */
     private $em;
 
+    /**
+     * UserSetupContext constructor.
+     *
+     * @param UserManagerInterface   $userManager
+     * @param EntityManagerInterface $em
+     */
     public function __construct(UserManagerInterface $userManager, EntityManagerInterface $em)
     {
         $this->userManager = $userManager;

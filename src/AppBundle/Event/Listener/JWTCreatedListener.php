@@ -29,11 +29,11 @@ class JWTCreatedListener
      */
     public function onJWTCreated(JWTCreatedEvent $event)
     {
-        $payload = $event->getData();
-
-        // add new data
-        $payload['userId'] = $this->tokenStorage->getToken()->getUser()->getId();
-
-        $event->setData($payload);
+//        $payload = $event->getData();
+//
+//        // add new data
+//        $payload['userId'] = $this->tokenStorage->getToken()->getUser()->getId();
+//
+//        $event->setData($payload);
     }
 }
