@@ -1,5 +1,4 @@
-FOS User Bundle with FOS REST Bundle integration
-""""""""""""""""""""""""""""""""""""""""""""""""
+# FOS User Bundle with FOS REST Bundle integration
 
 Full course available at : https://codereviewvideos.com/course/fosuser-fosrest-lexikjwt-user-login-registration-api
 
