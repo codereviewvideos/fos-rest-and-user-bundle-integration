@@ -1,0 +1,15 @@
+#fos_user_rest:
+#    type: rest
+#    resource: AppBundle\Controller\FosUserRestController
+
+
+api_login_check:
+    path: /login_check
+
+routing_rest:
+    resource: routing_rest.yml
+
+
+
+#fos_user:
+#    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
