@@ -92,16 +92,10 @@ nelmio_cors:
     paths:
         '^/': ~
 
+
 # Nelmio API Doc
-nelmio_api_doc:
-    sandbox:
-        accept_type:        "application/json"
-        body_format:
-            formats:        [ "json" ]
-            default_format: "json"
-        request_format:
-            formats:
-                json:       "application/json"
+nelmio_api_doc: ~
+
 
 # FOS REST Bundle
 fos_rest:
@@ -132,16 +126,7 @@ fos_rest:
 
 
 #JMS Serializer
-jms_serializer:
-    # uses IdenticalNamingStrategy - see parameters.yml
-    metadata:
-        directories:
-            KnpPaginatorBundle:
-                namespace_prefix: Knp\Bundle\PaginatorBundle
-                path: "%kernel.root_dir%/config/serializer/KnpPaginatorBundle"
-            KnpPager:
-                namespace_prefix: Knp\Component\Pager
-                path: "%kernel.root_dir%/config/serializer/KnpPager"
+jms_serializer: ~
 
 
 # CSA Guzzle
