@@ -1,0 +1,2 @@
+routing_rest_api:
+    resource: routing_rest.yml

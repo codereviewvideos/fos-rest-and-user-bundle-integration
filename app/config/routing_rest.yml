@@ -1,0 +1,3 @@
+login:
+    type: rest
+    resource: AppBundle\Controller\RestLoginController
