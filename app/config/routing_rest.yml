@@ -1,3 +1,7 @@
 login:
     type: rest
     resource: AppBundle\Controller\RestLoginController
+
+profile:
+    type: rest
+    resource: AppBundle\Controller\RestProfileController
