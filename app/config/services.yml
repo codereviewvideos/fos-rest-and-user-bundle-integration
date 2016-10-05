@@ -4,3 +4,7 @@ parameters:
 #    parameter_name: value
 
 services:
+    user.mailer.rest:
+        class: AppBundle\Mailer\RestMailer
+        public: false
+        parent: fos_user.mailer.twig_swift

@@ -89,7 +89,6 @@ Feature: Handle password changing via the RESTful API
     And the response should contain "The entered passwords don't match"
 
 
-  @this
   Scenario: Cannot change own password if missing one of the plainPassword fields
     When I am successfully logged in with username: "peter", and password: "testpass"
     And I send a "POST" request to "/password/1/change" with body:

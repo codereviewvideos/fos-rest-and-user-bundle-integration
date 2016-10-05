@@ -9,9 +9,11 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
+use FOS\UserBundle\Event\GetResponseNullableUserEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -26,6 +28,94 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
+
+    /**
+     * @param Request $request
+     * 
+     * @Post("/reset/request")
+     */
+    public function resetRequestAction(Request $request)
+    {
+        $username = $request->request->get('username');
+
+        /** @var $user UserInterface */
+        $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+
+        /** @var $dispatcher EventDispatcherInterface */
+        $dispatcher = $this->get('event_dispatcher');
+
+        /* Dispatch init event */
+        $event = new GetResponseNullableUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        if (null === $user) {
+            return new JsonResponse(
+                $this->get('translator')->trans(
+                    'resetting.request.invalid_username',
+                    [ "%username%" => $username ],
+                    'FOSUserBundle'
+                ),
+                JsonResponse::HTTP_FORBIDDEN
+            );
+        }
+
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_REQUEST, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
+            return new JsonResponse(
+                $this->get('translator')->trans('resetting.password_already_requested', [], 'FOSUserBundle'),
+                JsonResponse::HTTP_FORBIDDEN
+            );
+        }
+
+        if (null === $user->getConfirmationToken()) {
+            /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
+            $tokenGenerator = $this->get('fos_user.util.token_generator');
+            $user->setConfirmationToken($tokenGenerator->generateToken());
+        }
+
+        /* Dispatch confirm event */
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_CONFIRM, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        $this->get('fos_user.mailer')->sendResettingEmailMessage($user);
+        $user->setPasswordRequestedAt(new \DateTime());
+        $this->get('fos_user.user_manager')->updateUser($user);
+
+
+        /* Dispatch completed event */
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_SEND_EMAIL_COMPLETED, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        return new JsonResponse(
+            $this->get('translator')->trans(
+                'resetting.check_email',
+                [ '%email%' => $this->getObfuscatedEmail($user) ],
+                'FOSUserBundle'
+            ),
+            JsonResponse::HTTP_OK
+        );
+    }
+    
+    
+    
     /**
      * @Post("/{user}/change")
      *
@@ -83,5 +173,26 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
             JsonResponse::HTTP_OK
         );
+    }
+
+
+
+    /**
+     * Get the truncated email displayed when requesting the resetting.
+     *
+     * The default implementation only keeps the part following @ in the address.
+     *
+     * @param \FOS\UserBundle\Model\UserInterface $user
+     *
+     * @return string
+     */
+    protected function getObfuscatedEmail(UserInterface $user)
+    {
+        $email = $user->getEmail();
+        if (false !== $pos = strpos($email, '@')) {
+            $email = '...' . substr($email, $pos);
+        }
+
+        return $email;
     }
 }
