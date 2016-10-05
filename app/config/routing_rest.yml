@@ -5,3 +5,7 @@ login:
 profile:
     type: rest
     resource: AppBundle\Controller\RestProfileController
+
+password_management:
+    type: rest
+    resource: AppBundle\Controller\RestPasswordManagementController
