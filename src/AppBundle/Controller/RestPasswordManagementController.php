@@ -113,7 +113,76 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             JsonResponse::HTTP_OK
         );
     }
-    
+
+
+    /**
+     * @param Request $request
+     *
+     * @Post("/reset/confirm")
+     */
+    public function confirmResetAction(Request $request)
+    {
+        $token = $request->request->get('token', null);
+
+        if (null === $token) {
+            return new JsonResponse('You must submit a token.', JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('fos_user.resetting.form.factory');
+        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+        $userManager = $this->get('fos_user.user_manager');
+        /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $user = $userManager->findUserByConfirmationToken($token);
+
+        if (null === $user) {
+            return new JsonResponse(
+                sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $event = new GetResponseUserEvent($user, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_INITIALIZE, $event);
+
+        if (null !== $event->getResponse()) {
+            return $event->getResponse();
+        }
+
+        $form = $formFactory->createForm([
+            'csrf_protection'    => false,
+            'allow_extra_fields' => true,
+        ]);
+        $form->setData($user);
+
+        $form->submit($request->request->all());
+
+        if ( ! $form->isValid()) {
+            return $form;
+        }
+
+        $event = new FormEvent($form, $request);
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_SUCCESS, $event);
+
+        $userManager->updateUser($user);
+
+        if (null === $response = $event->getResponse()) {
+            return new JsonResponse(
+                $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
+                JsonResponse::HTTP_OK
+            );
+        }
+
+        $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+        return new JsonResponse(
+            $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
+            JsonResponse::HTTP_OK
+        );
+    }
+
     
     
     /**
