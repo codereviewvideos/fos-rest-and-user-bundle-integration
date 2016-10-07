@@ -869,12 +869,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "47e4de9d8b6fed521729fb38107d9413863fe4ce"
+                "reference": "962a7f3603cce63dae2a84839f030ddb748d890b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/47e4de9d8b6fed521729fb38107d9413863fe4ce",
-                "reference": "47e4de9d8b6fed521729fb38107d9413863fe4ce",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/962a7f3603cce63dae2a84839f030ddb748d890b",
+                "reference": "962a7f3603cce63dae2a84839f030ddb748d890b",
                 "shasum": ""
             },
             "require": {
@@ -936,7 +936,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2016-10-03 14:55:29"
+            "time": "2016-10-07 07:55:07"
         },
         {
             "name": "fzaninotto/faker",
@@ -4338,16 +4338,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.5.7",
+            "version": "5.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3f67cee782c9abfaee5e32fd2f57cdd54bc257ba"
+                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3f67cee782c9abfaee5e32fd2f57cdd54bc257ba",
-                "reference": "3f67cee782c9abfaee5e32fd2f57cdd54bc257ba",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/60c32c5b5e79c2248001efa2560f831da11cc2d7",
+                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7",
                 "shasum": ""
             },
             "require": {
@@ -4381,7 +4381,6 @@
                 "ext-pdo": "*"
             },
             "suggest": {
-                "ext-tidy": "*",
                 "ext-xdebug": "*",
                 "phpunit/php-invoker": "~1.1"
             },
@@ -4391,7 +4390,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.5.x-dev"
+                    "dev-master": "5.6.x-dev"
                 }
             },
             "autoload": {
@@ -4417,7 +4416,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-10-03 13:04:15"
+            "time": "2016-10-07 13:03:26"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

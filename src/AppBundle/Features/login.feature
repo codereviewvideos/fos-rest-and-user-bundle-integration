@@ -13,7 +13,7 @@ Feature: Handle user login via the RESTful API
       | 3  | tim      | tim@blah.net   | timpass  |
      And I set header "Content-Type" with value "application/json"
 
-
+@this
   Scenario: Cannot GET Login
     When I send a "GET" request to "/login"
     Then the response code should be 405
