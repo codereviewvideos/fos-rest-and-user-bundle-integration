@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class RestProfileController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @Get("/profile/{user}")
+     * @Annotations\Get("/profile/{user}")
      *
      * @Annotations\View(serializerGroups={
      *   "users_all"
