@@ -48,7 +48,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null === $user) {
             return new JsonResponse(
                 'User not recognised',
-                JsonResponseHTTP_FORBIDDEN
+                JsonResponse::HTTP_FORBIDDEN
             );
         }
 
@@ -62,7 +62,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
             return new JsonResponse(
                 $this->get('translator')->trans('resetting.password_already_requested', [], 'FOSUserBundle'),
-                JsonResponseHTTP_FORBIDDEN
+                JsonResponse::HTTP_FORBIDDEN
             );
         }
 
@@ -99,7 +99,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
                 [ '%tokenLifetime%' => floor($this->container->getParameter('fos_user.resetting.token_ttl') / 3600) ],
                 'FOSUserBundle'
             ),
-            JsonResponseHTTP_OK
+            JsonResponse::HTTP_OK
         );
     }
 
@@ -112,7 +112,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $token = $request->request->get('token', null);
 
         if (null === $token) {
-            return new JsonResponse('You must submit a token.', JsonResponseHTTP_BAD_REQUEST);
+            return new JsonResponse('You must submit a token.', JsonResponse::HTTP_BAD_REQUEST);
         }
 
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
@@ -128,7 +128,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             return new JsonResponse(
             // no translation provided for this in \FOS\UserBundle\Controller\ResettingController
                 sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
-                JsonResponseHTTP_BAD_REQUEST
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
@@ -158,7 +158,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null === $response = $event->getResponse()) {
             return new JsonResponse(
                 $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
-                JsonResponseHTTP_OK
+                JsonResponse::HTTP_OK
             );
         }
 
@@ -167,7 +167,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         return new JsonResponse(
             $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
-            JsonResponseHTTP_OK
+            JsonResponse::HTTP_OK
         );
     }
 
@@ -219,7 +219,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null === $response = $event->getResponse()) {
             return new JsonResponse(
                 $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
-                JsonResponseHTTP_OK
+                JsonResponse::HTTP_OK
             );
         }
 
@@ -227,7 +227,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         return new JsonResponse(
             $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
-            JsonResponseHTTP_OK
+            JsonResponse::HTTP_OK
         );
     }
 }
