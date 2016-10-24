@@ -70,7 +70,7 @@ Feature: Handle password changing via the RESTful API
         }
         """
      Then the response code should be 400
-     And the response should contain "This value should be the user's current password."
+     And the response should contain "The entered password is invalid"
 
 
   Scenario: Cannot change own password if new passwords do not match

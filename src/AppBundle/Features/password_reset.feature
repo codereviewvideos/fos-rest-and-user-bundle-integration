@@ -14,23 +14,23 @@ Feature: Handle password changing via the RESTful API
 
 
 
-  ##### REQUESTING ######
+  ##### REQUESTING ###### @f @this
   Scenario: Cannot request a password for an invalid username
     When I send a "POST" request to "/password/reset/request" with body:
       """
       { "username": "made up" }
       """
     Then the response code should be 403
-    And the response should contain "The username or email address \u0022made up\u0022 does not exist"
+    And the response should contain "User not recognised"
 
-
+ @f
   Scenario: User can request a password reset given a valid username
     When I send a "POST" request to "/password/reset/request" with body:
       """
       { "username": "peter" }
       """
     Then the response code should be 200
-    And the response should contain "An email has been sent to ...@test.com. It contains a link you must click to reset your password."
+    And the response should contain "An email has been sent. It contains a link you must click to reset your password."
 
 
   Scenario: Cannot request another password reset for an account already requesting, but not yet confirmed

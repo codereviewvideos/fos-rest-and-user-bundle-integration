@@ -2,39 +2,34 @@
 
 namespace AppBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Prefix;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
-use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseNullableUserEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use JMS\Serializer\SerializationContext;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Class RestPasswordManagementController
- * @package AppBundle\Controller
- *
- * @Prefix("password")
+ * @Annotations\Prefix("password")
  * @RouteResource("password", pluralize=false)
  */
 class RestPasswordManagementController extends FOSRestController implements ClassResourceInterface
 {
-
     /**
-     * @param Request $request
-     * 
-     * @Post("/reset/request")
+     * @Annotations\Post("/reset/request")
      */
-    public function resetRequestAction(Request $request)
+    public function requestResetAction(Request $request)
     {
         $username = $request->request->get('username');
 
@@ -54,11 +49,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         if (null === $user) {
             return new JsonResponse(
-                $this->get('translator')->trans(
-                    'resetting.request.invalid_username',
-                    [ "%username%" => $username ],
-                    'FOSUserBundle'
-                ),
+                'User not recognised',
                 JsonResponse::HTTP_FORBIDDEN
             );
         }
@@ -107,18 +98,16 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         return new JsonResponse(
             $this->get('translator')->trans(
                 'resetting.check_email',
-                [ '%email%' => $this->getObfuscatedEmail($user) ],
+                [ '%tokenLifetime%' => floor($this->container->getParameter('fos_user.resetting.token_ttl') / 3600) ],
                 'FOSUserBundle'
             ),
             JsonResponse::HTTP_OK
         );
     }
 
-
     /**
-     * @param Request $request
-     *
-     * @Post("/reset/confirm")
+     * Reset user password
+     * @Annotations\Post("/reset/confirm")
      */
     public function confirmResetAction(Request $request)
     {
@@ -139,6 +128,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         if (null === $user) {
             return new JsonResponse(
+            // no translation provided for this in \FOS\UserBundle\Controller\ResettingController
                 sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
                 JsonResponse::HTTP_BAD_REQUEST
             );
@@ -156,10 +146,9 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             'allow_extra_fields' => true,
         ]);
         $form->setData($user);
-
         $form->submit($request->request->all());
 
-        if ( ! $form->isValid()) {
+        if (!$form->isValid()) {
             return $form;
         }
 
@@ -175,6 +164,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             );
         }
 
+        // unsure if this is now needed / will work the same
         $dispatcher->dispatch(FOSUserEvents::RESETTING_RESET_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
         return new JsonResponse(
@@ -183,12 +173,13 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         );
     }
 
-    
-    
+
     /**
-     * @Post("/{user}/change")
+     * Change user password
      *
      * @ParamConverter("user", class="AppBundle:User")
+     *
+     * @Annotations\Post("/{user}/change")
      */
     public function changeAction(Request $request, UserInterface $user)
     {
@@ -209,9 +200,10 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('fos_user.change_password.form.factory');
 
-        $form = $formFactory->createForm(['csrf_protection' => false]);
+        $form = $formFactory->createForm([
+            'csrf_protection'    => false
+        ]);
         $form->setData($user);
-
         $form->submit($request->request->all());
 
         if ( ! $form->isValid()) {
@@ -233,35 +225,11 @@ class RestPasswordManagementController extends FOSRestController implements Clas
             );
         }
 
-        $dispatcher->dispatch(
-            FOSUserEvents::CHANGE_PASSWORD_COMPLETED,
-            new FilterUserResponseEvent($user, $request, $response)
-        );
+        $dispatcher->dispatch(FOSUserEvents::CHANGE_PASSWORD_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
 
         return new JsonResponse(
             $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
             JsonResponse::HTTP_OK
         );
-    }
-
-
-
-    /**
-     * Get the truncated email displayed when requesting the resetting.
-     *
-     * The default implementation only keeps the part following @ in the address.
-     *
-     * @param \FOS\UserBundle\Model\UserInterface $user
-     *
-     * @return string
-     */
-    protected function getObfuscatedEmail(UserInterface $user)
-    {
-        $email = $user->getEmail();
-        if (false !== $pos = strpos($email, '@')) {
-            $email = '...' . substr($email, $pos);
-        }
-
-        return $email;
     }
 }
