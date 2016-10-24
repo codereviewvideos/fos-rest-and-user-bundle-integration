@@ -68,7 +68,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-     And the response should contain "This value should be the user's current password."
+     And the response should contain "This value should be your current password."
 
   Scenario: Cannot change password with mismatched new password
     When I am successfully logged in with username: "peter", and password: "testpass"

@@ -7,10 +7,10 @@ Feature: Handle password changing via the RESTful API
 
   Background:
     Given there are Users with the following details:
-      | id | username | email          | password | confirmation_token |
-      | 1  | peter    | peter@test.com | testpass |                    |
-      | 2  | john     | john@test.org  | johnpass | some-token-string  |
-     And I set header "Content-Type" with value "application/json"
+      | uid | username | email          | password | confirmation_token |
+      | u1  | peter    | peter@test.com | testpass |                    |
+      | u2  | john     | john@test.org  | johnpass | some-token-string  |
+    And I set header "Content-Type" with value "application/json"
 
 
   ############################
@@ -22,7 +22,7 @@ Feature: Handle password changing via the RESTful API
       { "username": "davey" }
       """
     Then the response code should be 403
-     And the response should contain "The username or email address \u0022davey\u0022 does not exist"
+    And the response should contain "User not recognised"
      # silly
 
   Scenario: Can request a password reset for a valid username
@@ -31,15 +31,15 @@ Feature: Handle password changing via the RESTful API
       { "username": "peter" }
       """
     Then the response code should be 200
-     And the response should contain "An email has been sent to ...@test.com. It contains a link you must click to reset your password."
+    And the response should contain "An email has been sent. It contains a link you must click to reset your password."
 
   Scenario: Cannot request another password reset for an account already requesting, but not yet actioning the reset request
-     When I send a "POST" request to "/password/reset/request" with body:
+    When I send a "POST" request to "/password/reset/request" with body:
       """
       { "username": "john" }
       """
     Then the response code should be 403
-     And the response should contain "The password for this user has already been requested within the last 24 hours."
+    And the response should contain "The password for this user has already been requested within the last 24 hours."
 
 
 
@@ -53,7 +53,7 @@ Feature: Handle password changing via the RESTful API
       { "bad": "data" }
       """
     Then the response code should be 400
-     And the response should contain "You must submit a token"
+    And the response should contain "You must submit a token"
 
   Scenario: Cannot confirm with an invalid token
     When I send a "POST" request to "/password/reset/confirm" with body:
@@ -73,7 +73,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-     And the response should contain "The entered passwords don't match"
+    And the response should contain "The entered passwords don't match"
 
   Scenario: Cannot confirm with a mismatched password and confirmation
     When I send a "POST" request to "/password/reset/confirm" with body:
@@ -87,7 +87,7 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 400
-     And the response should contain "The entered passwords don't match"
+    And the response should contain "The entered passwords don't match"
 
   Scenario: Can confirm with valid new password
     When I send a "POST" request to "/password/reset/confirm" with body:
@@ -101,8 +101,8 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 200
-     And the response should contain "The password has been reset successfully"
-     And I send a "POST" request to "/login" with body:
+    And the response should contain "The password has been reset successfully"
+    And I send a "POST" request to "/login" with body:
       """
       {
         "username": "john",
@@ -110,4 +110,4 @@ Feature: Handle password changing via the RESTful API
       }
       """
     Then the response code should be 200
-     And the response should contain "token"
+    And the response should contain "token"

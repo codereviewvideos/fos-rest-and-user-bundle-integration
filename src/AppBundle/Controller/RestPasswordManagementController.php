@@ -10,13 +10,10 @@ use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\GetResponseNullableUserEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
-use JMS\Serializer\SerializationContext;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -50,12 +47,8 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         if (null === $user) {
             return new JsonResponse(
-                $this->get('translator')->trans(
-                    'resetting.request.invalid_username',
-                    [ '%username%' => $username ],
-                    'FOSUserBundle'
-                ),
-                Response::HTTP_FORBIDDEN
+                'User not recognised',
+                JsonResponseHTTP_FORBIDDEN
             );
         }
 
@@ -69,7 +62,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
             return new JsonResponse(
                 $this->get('translator')->trans('resetting.password_already_requested', [], 'FOSUserBundle'),
-                Response::HTTP_FORBIDDEN
+                JsonResponseHTTP_FORBIDDEN
             );
         }
 
@@ -86,7 +79,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
-        
+
         $this->get('fos_user.mailer')->sendResettingEmailMessage($user);
         $user->setPasswordRequestedAt(new \DateTime());
         $this->get('fos_user.user_manager')->updateUser($user);
@@ -103,10 +96,10 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         return new JsonResponse(
             $this->get('translator')->trans(
                 'resetting.check_email',
-                [ '%email%' => $this->getObfuscatedEmail($user) ],
+                [ '%tokenLifetime%' => floor($this->container->getParameter('fos_user.resetting.token_ttl') / 3600) ],
                 'FOSUserBundle'
             ),
-            Response::HTTP_OK
+            JsonResponseHTTP_OK
         );
     }
 
@@ -119,7 +112,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         $token = $request->request->get('token', null);
 
         if (null === $token) {
-            return new JsonResponse('You must submit a token.', Response::HTTP_BAD_REQUEST);
+            return new JsonResponse('You must submit a token.', JsonResponseHTTP_BAD_REQUEST);
         }
 
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
@@ -133,9 +126,9 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         if (null === $user) {
             return new JsonResponse(
-                // no translation provided for this in \FOS\UserBundle\Controller\ResettingController
+            // no translation provided for this in \FOS\UserBundle\Controller\ResettingController
                 sprintf('The user with "confirmation token" does not exist for value "%s"', $token),
-                Response::HTTP_BAD_REQUEST
+                JsonResponseHTTP_BAD_REQUEST
             );
         }
 
@@ -165,7 +158,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null === $response = $event->getResponse()) {
             return new JsonResponse(
                 $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
-                Response::HTTP_OK
+                JsonResponseHTTP_OK
             );
         }
 
@@ -174,29 +167,9 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         return new JsonResponse(
             $this->get('translator')->trans('resetting.flash.success', [], 'FOSUserBundle'),
-            Response::HTTP_OK
+            JsonResponseHTTP_OK
         );
     }
-
-    /**
-     * Get the truncated email displayed when requesting the resetting.
-     *
-     * The default implementation only keeps the part following @ in the address.
-     *
-     * @param \FOS\UserBundle\Model\UserInterface $user
-     *
-     * @return string
-     */
-    protected function getObfuscatedEmail(UserInterface $user)
-    {
-        $email = $user->getEmail();
-        if (false !== $pos = strpos($email, '@')) {
-            $email = '...' . substr($email, $pos);
-        }
-
-        return $email;
-    }
-
 
 
     /**
@@ -246,7 +219,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
         if (null === $response = $event->getResponse()) {
             return new JsonResponse(
                 $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
-                Response::HTTP_OK
+                JsonResponseHTTP_OK
             );
         }
 
@@ -254,7 +227,7 @@ class RestPasswordManagementController extends FOSRestController implements Clas
 
         return new JsonResponse(
             $this->get('translator')->trans('change_password.flash.success', [], 'FOSUserBundle'),
-            Response::HTTP_OK
+            JsonResponseHTTP_OK
         );
     }
 }
