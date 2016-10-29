@@ -401,6 +401,11 @@ class RestApiContext implements Context
     {
         $location = $this->response->getHeader('Location')[0];
 
+        if ( ! $this->hasHeader('Authorization')) {
+            $responseBody = json_decode($this->response->getBody(), true);
+            $this->addHeader('Authorization', 'Bearer ' . $responseBody['token']);
+        }
+        
         $this->iSendARequest(Request::METHOD_GET, $location);
     }
 
@@ -484,6 +489,11 @@ class RestApiContext implements Context
         $this->headers[$name] = $value;
     }
 
+    protected function hasHeader($headerName)
+    {
+        return array_key_exists($headerName, $this->headers);
+    }
+
     /**
      * Removes a header identified by $headerName
      *
@@ -491,7 +501,7 @@ class RestApiContext implements Context
      */
     protected function removeHeader($headerName)
     {
-        if (array_key_exists($headerName, $this->headers)) {
+        if ($this->hasHeader($headerName)) {
             unset($this->headers[$headerName]);
         }
     }

@@ -2,6 +2,10 @@ login:
     type: rest
     resource: AppBundle\Controller\RestLoginController
 
+registration:
+    type: rest
+    resource: AppBundle\Controller\RestRegistrationController
+
 profile:
     type: rest
     resource: AppBundle\Controller\RestProfileController

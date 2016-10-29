@@ -123,6 +123,15 @@ csa_guzzle:
     profiler: "%kernel.debug%"
 
 
+# JMS Serializer
+jms_serializer:
+    metadata:
+        directories:
+            FOSUB:
+                namespace_prefix: FOS\UserBundle
+                path: "%kernel.root_dir%/../var/serializer/FOSUB"
+
+
 # Lexik JWT Bundle
 lexik_jwt_authentication:
     private_key_path: "%jwt_private_key_path%"
