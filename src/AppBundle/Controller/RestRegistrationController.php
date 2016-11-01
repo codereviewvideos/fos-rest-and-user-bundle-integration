@@ -13,6 +13,7 @@ use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @RouteResource("registration", pluralize=false)
@@ -33,7 +34,7 @@ class RestRegistrationController extends FOSRestController implements ClassResou
 
         $user = $userManager->createUser();
         $user->setEnabled(true);
-
+        
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, $event);
 
@@ -62,19 +63,31 @@ class RestRegistrationController extends FOSRestController implements ClassResou
         $event = new FormEvent($form, $request);
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
 
-        $userManager->updateUser($user);
-
-        if (null === $response = $event->getResponse()) {
-            return new JsonResponse(
-                [
-                    'msg' => $this->get('translator')->trans('registration.flash.user_created', [], 'FOSUserBundle'),
-                    'token' => $this->get('lexik_jwt_authentication.jwt_manager')->create($user), // creates JWT
-                ],
-                Response::HTTP_CREATED
-            );
+        if ($event->getResponse()) {
+            return $event->getResponse();
         }
 
-        $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+        $userManager->updateUser($user);
+
+        $response = new JsonResponse(
+            [
+                'msg' => $this->get('translator')->trans('registration.flash.user_created', [], 'FOSUserBundle'),
+                'token' => $this->get('lexik_jwt_authentication.jwt_manager')->create($user), // creates JWT
+            ],
+            Response::HTTP_CREATED,
+            [
+                'Location' => $this->generateUrl(
+                    'get_profile',
+                    [ 'user' => $user->getId() ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            ]
+        );
+
+        $dispatcher->dispatch(
+            FOSUserEvents::REGISTRATION_COMPLETED,
+            new FilterUserResponseEvent($user, $request, $response)
+        );
 
         return $response;
     }
