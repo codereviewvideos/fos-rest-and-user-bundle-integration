@@ -9,10 +9,7 @@ services:
         public: false
         parent: fos_user.mailer.twig_swift
 
-    event.jwt_created_listener:
+    event.listener.jwt_created_listener:
         class: AppBundle\Event\Listener\JWTCreatedListener
-        arguments:
-            - "@security.token_storage"
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-
