@@ -74,12 +74,18 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: api
+    use_flash_notifications: false
     user_class: AppBundle\Entity\User
     from_email:
         address: "%mailer_from_email_address%"
         sender_name: "%mailer_from_email_sender_name%"
     service:
         mailer: user.mailer.rest
+    registration:
+        confirmation:
+            enabled:    true # change to true for required email confirmation
+            template:   '::Registration/email.txt.twig'
+
 
 
 # Nelmio CORS

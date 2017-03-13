@@ -29,15 +29,9 @@ class RestMailer implements MailerInterface
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
         $template = $this->parameters['template']['confirmation'];
-        $url = $this->router->generate(
-            'fos_user_registration_confirm', 
-            array('token' => $user->getConfirmationToken()), 
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
         $context = array(
             'user' => $user,
-            'confirmationUrl' => $url
+            'confirmationUrl' => 'http://whatever.com/'
         );
 
         $this->sendMessage($template, $context, $this->parameters['from_email']['confirmation'], $user->getEmail());
@@ -80,8 +74,10 @@ class RestMailer implements MailerInterface
             ->setTo($toEmail);
 
         if (!empty($htmlBody)) {
-            $message->setBody($htmlBody, 'text/html')
-                ->addPart($textBody, 'text/plain');
+            $message
+                ->setBody($htmlBody, 'text/html')
+                ->addPart($textBody, 'text/plain')
+            ;
         } else {
             $message->setBody($textBody);
         }
