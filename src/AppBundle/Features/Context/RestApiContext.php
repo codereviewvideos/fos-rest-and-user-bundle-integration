@@ -7,11 +7,8 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Post\PostFile;
 use GuzzleHttp\Psr7;
 use PHPUnit_Framework_Assert as Assertions;
-use Sanpi\Behatch\Json\JsonInspector;
-use Sanpi\Behatch\Json\JsonSchema;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -36,12 +33,12 @@ class RestApiContext implements Context
     private $headers = [];
 
     /**
-     * @var \GuzzleHttp\Message\RequestInterface
+     * @var \GuzzleHttp\Psr7\Request
      */
     private $request;
 
     /**
-     * @var \GuzzleHttp\Message\ResponseInterface
+     * @var \GuzzleHttp\Psr7\Response
      */
     private $response;
 
