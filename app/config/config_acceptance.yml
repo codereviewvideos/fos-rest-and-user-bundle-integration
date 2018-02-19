@@ -9,12 +9,13 @@ framework:
 web_profiler:
     toolbar: true
 
-csa_guzzle:
-    logger: true
+# EightPoints Guzzle
+guzzle:
+    logging: true
     clients:
         local_test_api:
-            config:
-                base_uri: "http://api.rest-user-api.dev/app_acceptance.php/"
+            base_url: "http://api.rest-user-api.dev/app_acceptance.php/"
+#            base_url: "http://127.0.0.1:8000/app_acceptance.php/"
 
 
 

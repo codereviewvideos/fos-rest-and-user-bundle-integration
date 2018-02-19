@@ -3,12 +3,10 @@
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
     database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
+    database_port:     3306
+    database_name:     db_dev
     database_user:     root
-    database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    # database_path: "%kernel.root_dir%/data.db3"
+    database_password: password
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -27,7 +25,7 @@ parameters:
     api_description: 'The full description of your API'
 
     # lexik jwt bundle
-    jwt_private_key_path: %kernel.root_dir%/var/jwt/private.pem   # ssh private key path
-    jwt_public_key_path:  %kernel.root_dir%/var/jwt/public.pem    # ssh public key path
-    jwt_key_pass_phrase:  'changeme'                              # ssh key pass phrase
+    jwt_private_key_path: %kernel.project_dir%/var/jwt/private.pem   # ssh private key path
+    jwt_public_key_path:  %kernel.project_dir%/var/jwt/public.pem    # ssh public key path
+    jwt_key_pass_phrase:  'changeme'                                 # ssh key pass phrase
     jwt_token_ttl:        86400
