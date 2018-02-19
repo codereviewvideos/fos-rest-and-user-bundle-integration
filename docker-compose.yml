@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+    db_dev:
+        image: mysql:5.7.20
+#        container_name: mysql_dev_frbub
+#        volumes:
+#          - "./volumes/mysql_dev:/var/lib/mysql"
+        ports:
+          - "3306:3306"
+        environment:
+          - MYSQL_ROOT_PASSWORD=password
+          - MYSQL_DATABASE=db_dev
+          - MYSQL_USER=dbuser
+          - MYSQL_PASSWORD=dbpassword
