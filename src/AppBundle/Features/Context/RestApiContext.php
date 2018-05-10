@@ -8,7 +8,7 @@ use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
-use PHPUnit_Framework_Assert as Assertions;
+use PHPUnit\Framework\Assert as Assertions;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
